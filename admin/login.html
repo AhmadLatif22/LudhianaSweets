@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Sign In | Ludhiana Sweets</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+  <div class="login-box">
+    <h1 style="font-size:1.5rem;margin-bottom:8px;">Admin Sign In</h1>
+    <p style="color:rgba(74,44,29,.6);font-size:.85rem;margin-bottom:24px;">
+      Demo login only — see js/admin-auth.js to wire up something real.
+    </p>
+    <form id="loginForm">
+      <div class="field" style="text-align:left;">
+        <label for="username">Username</label>
+        <input class="input" id="username" required />
+      </div>
+      <div class="field" style="text-align:left;">
+        <label for="password">Password</label>
+        <input class="input" type="password" id="password" required />
+      </div>
+      <p class="error" id="loginError" style="margin-bottom:12px;"></p>
+      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+    </form>
+    <p style="font-size:.78rem;color:rgba(74,44,29,.4);margin-top:16px;">Demo credentials: admin / ludhiana123</p>
+  </div>
+<script src="../js/admin-auth.js"></script>
+</body>
+</html>

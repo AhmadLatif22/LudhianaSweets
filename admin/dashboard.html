@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin Overview | Ludhiana Sweets</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <a href="dashboard.html" class="logo">Ludhiana <span class="gold-text">Admin</span></a>
+    <nav>
+      <a href="dashboard.html" class="active">📊 Overview</a>
+      <a href="orders.html">🛒 Orders</a>
+      <a href="products.html">📦 Products</a>
+    </nav>
+    <div style="margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,253,248,.1);">
+      <button class="btn btn-outline btn-block" id="logoutBtn" style="color:var(--cream);border-color:rgba(255,253,248,.3);">Sign Out</button>
+    </div>
+  </aside>
+  <div class="admin-main">
+
+    <h1 style="font-size:1.6rem;">Overview</h1>
+    <p style="color:rgba(74,44,29,.6);font-size:.9rem;margin-top:6px;">
+      Figures below are calculated from orders placed on this browser (stored in localStorage) —
+      swap js/admin-data.js for real API calls once you have a backend.
+    </p>
+    <div class="admin-stats" id="statsGrid"></div>
+  </div>
+</div>
+<script src="../js/admin-auth.js"></script>
+<script src="../js/cart.js"></script>
+<script src="../js/products-data.js"></script>
+<script src="../js/admin-data.js"></script>
+<script src="../js/admin-dashboard.js"></script>
+</body>
+</html>
