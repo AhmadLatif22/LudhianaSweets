@@ -103,7 +103,7 @@ values (
   'Ludhiana Special Barfi',
   'Handcrafted with pure desi ghee, the traditional Ludhiana way',
   E'Our signature barfi is simmered slowly in pure desi ghee and full-cream khoya, finished with a dusting of silver warq and slivered pistachios. It''s the same recipe carried from Ludhiana''s sweet houses generations ago — dense, milky, and never overly sweet.',
-  array['Full-cream khoya (milk solids)', 'Pure desi ghee', 'Cane sugar', 'Cardamom', 'Silver warq', 'Pistachios & almonds'],
+  array['Full-cream khoya', 'Cane sugar', 'Cardamom', 'Almonds'],
   'Store in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days. Bring to room temperature before serving for the best texture.',
   array['images/barfi-1.jpg', 'images/barfi-2.jpg', 'images/barfi-3.jpg', 'images/barfi-4.jpg'],
   'Barfi',
@@ -114,9 +114,8 @@ values (
 on conflict (id) do nothing;
 
 insert into product_prices (product_id, weight, price, stock) values
-  ('barfi-classic', '250g', 850, 40),
-  ('barfi-classic', '500g', 1600, 35),
-  ('barfi-classic', '1kg', 3100, 20)
+  ('barfi-classic', '500g', 1000, 35),
+  ('barfi-classic', '1kg', 1800, 20)
 on conflict do nothing;
 
 -- ---------- Next: create your admin login ----------
