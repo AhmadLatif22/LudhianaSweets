@@ -9,7 +9,7 @@
    product data in js/products-data.js so nothing breaks.
    ========================================================================== */
 
-const SUPABASE_URL = "https://wnhjfjpmnhnfrtjqbkcv.supabase.co/rest/v1/"; 
+const SUPABASE_URL = "https://wnhjfjpmnhnfrtjqbkcv.supabase.co"; 
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InduaGpmanBtbmhuZnJ0anFia2N2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3NTI5MDUsImV4cCI6MjEwMTMyODkwNX0.jQyFZZ_2cAdUD3PA-Esz432nhWvRXtMwdryx8eggoJ8"; 
 
 let supabaseClient = null;
