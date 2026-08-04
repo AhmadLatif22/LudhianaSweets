@@ -13,7 +13,7 @@
 
   <div class="login-box">
     <h1 style="font-size:1.5rem;margin-bottom:8px;">Admin Sign In</h1>
-    <p style="color:rgba(74,44,29,.6);font-size:.85rem;margin-bottom:24px;">
+    <p style="color:rgba(74,44,29,.6);font-size:.85rem;margin-bottom:24px;" id="loginSubtitle">
       Demo login only — see js/admin-auth.js to wire up something real.
     </p>
     <form id="loginForm">
@@ -28,8 +28,10 @@
       <p class="error" id="loginError" style="margin-bottom:12px;"></p>
       <button type="submit" class="btn btn-primary btn-block">Sign In</button>
     </form>
-    <p style="font-size:.78rem;color:rgba(74,44,29,.4);margin-top:16px;">Demo credentials: admin / ludhiana123</p>
+    <p style="font-size:.78rem;color:rgba(74,44,29,.4);margin-top:16px;" id="demoCredentialsHint">Demo credentials: admin / ludhiana123</p>
   </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase-client.js"></script>
 <script src="../js/admin-auth.js"></script>
 </body>
 </html>
