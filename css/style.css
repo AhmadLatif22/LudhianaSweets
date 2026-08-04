@@ -330,7 +330,9 @@ input.input, textarea.input, select.input {
 .product-card { background: #fff; border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow-card); transition: box-shadow 0.3s; }
 .product-card:hover { box-shadow: var(--shadow-soft); }
 .product-card .thumb { aspect-ratio: 1/1; overflow: hidden; }
-.product-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.product-card .thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; transform: scale(1.06); }
+.no-image-placeholder {width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; background: var(--beige);color: rgba(74,44,29,.45); font-size: .78rem; text-align: center; padding: 10px;}
+.no-image-placeholder svg {opacity: .6;}
 .product-card:hover .thumb img { transform: scale(1.06); }
 .product-card .body { padding: 20px; }
 .product-card .rating { color: var(--gold); font-size: 0.8rem; margin-bottom: 8px; }
@@ -425,6 +427,22 @@ input.input, textarea.input, select.input {
 .admin-table th { background: rgba(243,230,208,0.5); text-align: left; padding: 14px; font-size: 0.85rem; }
 .admin-table td { padding: 14px; border-top: 1px solid rgba(183,139,92,0.1); font-size: 0.88rem; }
 .login-box { max-width: 380px; margin: 100px auto; background: #fff; border-radius: var(--radius); padding: 40px; box-shadow: var(--shadow-card); text-align: center; }
+.db-banner { padding: 12px 18px; border-radius: 12px; font-size: 0.85rem; font-weight: 500; }
+.db-banner:empty { display: none; }
+.db-banner.connected { background: rgba(30, 126, 52, 0.1); color: #1e7e34; border: 1px solid rgba(30, 126, 52, 0.25); }
+.db-banner.demo { background: rgba(200, 155, 60, 0.1); color: var(--gold); border: 1px solid rgba(200, 155, 60, 0.3); }
+
+/* ---------- Admin Packaging management ------------*/
+.packaging-card { position: relative; }
+.remove-packaging { position: absolute; top: 8px; right: 8px; background: none; border: none; cursor: pointer; color: rgba(74,44,29,.35); font-size: .9rem; line-height: 1; }
+.remove-packaging:hover { color: #c0392b; }
+.add-packaging-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-top: 16px; padding-top: 16px; border-top: 1px dashed rgba(183,139,92,.3); }
+.add-packaging-form .field { margin-bottom: 0; flex: 1; min-width: 110px; }
+.add-packaging-form .field label { font-size: .75rem; margin-bottom: 4px; }
+.add-packaging-form input,
+.add-packaging-form select { padding: 10px 12px; font-size: .85rem; }
+.custom-weight-input { display: none; }
+.custom-weight-input.show { display: block; }
 
 /* ---------- Legal pages ---------- */
 .legal-content { max-width: 720px; margin: 0 auto; color: rgba(74,44,29,0.75); }

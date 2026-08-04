@@ -27,38 +27,58 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Gallery
     const thumbs = document.getElementById("galleryThumbs");
-    thumbs.innerHTML = product.images
-      .map(
-        (img, i) => `
+    const mainImg = document.getElementById("galleryMainImg");
+    const mainWrap = document.getElementById("galleryMain");
+
+    if (!product.images || product.images.length === 0) {
+      mainImg.style.display = "none";
+      if (!mainWrap.querySelector(".no-image-placeholder")) {
+        mainWrap.insertAdjacentHTML(
+          "beforeend",
+          `<div class="no-image-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Photos coming soon</span></div>`
+        );
+      }
+      thumbs.innerHTML = "";
+    } else {
+      mainImg.style.display = "";
+      mainWrap.querySelector(".no-image-placeholder")?.remove();
+      thumbs.innerHTML = product.images
+        .map(
+          (img, i) => `
         <button class="${i === 0 ? "active" : ""}" data-img="${img}" aria-label="View image ${i + 1}">
           <img src="${img}" alt="" />
         </button>`
-      )
-      .join("");
-    document.getElementById("galleryMainImg").src = product.images[0];
-    thumbs.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        thumbs.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById("galleryMainImg").src = btn.dataset.img;
+        )
+        .join("");
+      mainImg.src = product.images[0];
+      thumbs.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          thumbs.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          mainImg.src = btn.dataset.img;
+        });
       });
-    });
+    }
 
     // Weight options
     const weightWrap = document.getElementById("weightOptions");
-    weightWrap.innerHTML = product.prices
-      .map(
-        (p) => `<button class="${p.weight === selectedWeight ? "active" : ""}" data-weight="${p.weight}">${p.weight}</button>`
-      )
-      .join("");
-    weightWrap.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        selectedWeight = btn.dataset.weight;
-        weightWrap.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        refreshPriceAndStock();
+    if (!product.prices || product.prices.length === 0) {
+      weightWrap.innerHTML = `<p style="font-size:.85rem;color:rgba(74,44,29,.5);">No packaging options yet — check back soon.</p>`;
+    } else {
+      weightWrap.innerHTML = product.prices
+        .map(
+          (p) => `<button class="${p.weight === selectedWeight ? "active" : ""}" data-weight="${p.weight}">${p.weight}</button>`
+        )
+        .join("");
+      weightWrap.querySelectorAll("button").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          selectedWeight = btn.dataset.weight;
+          weightWrap.querySelectorAll("button").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          refreshPriceAndStock();
+        });
       });
-    });
+    }
 
     // Ingredients / storage
     document.getElementById("productIngredients").innerHTML = product.ingredients
