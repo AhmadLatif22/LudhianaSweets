@@ -90,9 +90,9 @@
       </div>
 
       <div class="reveal" style="transition-delay:.1s">
-        <div class="rating" style="color:var(--gold);font-size:.9rem;margin-bottom:10px;">★★★★★ <span style="color:rgba(74,44,29,.5)">4.9 (128 reviews)</span></div>
-        <h1>Ludhiana Special Barfi</h1>
-        <p style="color:rgba(74,44,29,.7);margin-top:8px;">Handcrafted with pure desi ghee, the traditional Ludhiana way</p>
+        <div class="rating" id="productRating" style="color:var(--gold);font-size:.9rem;margin-bottom:10px;">★★★★★ <span style="color:rgba(74,44,29,.5)">4.9 (128 reviews)</span></div>
+        <h1 id="productName">Ludhiana Special Barfi</h1>
+        <p id="productTagline" style="color:rgba(74,44,29,.7);margin-top:8px;">Handcrafted with pure desi ghee, the traditional Ludhiana way</p>
         <p class="product-price" id="productPrice">Rs 850</p>
 
         <div class="option-group">
@@ -131,7 +131,7 @@
         <button data-tab="reviews">Reviews</button>
       </div>
       <div class="tab-panel active" id="tab-ingredients">
-        <ul class="ingredients-list">
+        <ul class="ingredients-list" id="productIngredients">
           <li>Full-cream khoya (milk solids)</li>
           <li>Pure desi ghee</li>
           <li>Cane sugar</li>
@@ -141,7 +141,7 @@
         </ul>
       </div>
       <div class="tab-panel" id="tab-storage">
-        <p style="max-width:640px;color:rgba(74,44,29,.75);">Store in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days. Bring to room temperature before serving for the best texture.</p>
+        <p id="productStorage" style="max-width:640px;color:rgba(74,44,29,.75);">Store in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days. Bring to room temperature before serving for the best texture.</p>
       </div>
       <div class="tab-panel" id="tab-delivery">
         <p style="max-width:640px;color:rgba(74,44,29,.75);">Delivered fresh within 1-4 days depending on your city, in sealed insulated packaging. Cash on Delivery available nationwide, alongside card and mobile wallet payments.</p>
@@ -202,6 +202,8 @@
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/products-data.js"></script>
 <script src="js/product.js"></script>
 </body>

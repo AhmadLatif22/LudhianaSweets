@@ -46,6 +46,16 @@ const DEMO_PRODUCTS = [
   },
 ];
 
+// Shown at render time only (shop grid, product gallery, admin thumbnails)
+// when a product genuinely has zero images yet. This is a data: URI, never
+// written back to the database, so it can never get mixed into a real
+// image array the way the old "images/placeholder.jpg" string did.
+const PLACEHOLDER_IMAGE =
+  "data:image/svg+xml;utf8," +
+  encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#F3E6D0"/><text x="200" y="210" font-family="sans-serif" font-size="20" fill="#B78B5C" text-anchor="middle">No image yet</text></svg>`
+  );
+
 function normalizeProduct(row) {
   return {
     id: row.id,
@@ -55,8 +65,8 @@ function normalizeProduct(row) {
     description: row.description || "",
     ingredients: row.ingredients || [],
     storageInstructions: row.storage_instructions || "",
-    images: row.images && row.images.length ? row.images : ["images/placeholder.jpg"],
-    prices: (row.product_prices || []).map((p) => ({ weight: p.weight, price: Number(p.price), stock: p.stock })),
+    images: row.images || [],
+    prices: (row.product_prices || []).map((p) => ({ id: p.id, weight: p.weight, price: Number(p.price), stock: p.stock })),
     category: row.category || "",
     rating: row.rating ? Number(row.rating) : 5,
     reviewCount: row.review_count || 0,
@@ -72,7 +82,7 @@ async function loadProducts() {
 
   const { data, error } = await supabaseClient
     .from("products")
-    .select("*, product_prices(weight, price, stock)")
+    .select("*, product_prices(id, weight, price, stock)")
     .order("created_at", { ascending: true });
 
   if (error) {
