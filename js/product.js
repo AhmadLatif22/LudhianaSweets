@@ -28,20 +28,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Gallery
     const thumbs = document.getElementById("galleryThumbs");
     const mainImg = document.getElementById("galleryMainImg");
-    const mainWrap = document.getElementById("galleryMain");
 
     if (!product.images || product.images.length === 0) {
       mainImg.style.display = "none";
-      if (!mainWrap.querySelector(".no-image-placeholder")) {
-        mainWrap.insertAdjacentHTML(
-          "beforeend",
-          `<div class="no-image-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg><span>Photos coming soon</span></div>`
-        );
-      }
       thumbs.innerHTML = "";
     } else {
       mainImg.style.display = "";
-      mainWrap.querySelector(".no-image-placeholder")?.remove();
       thumbs.innerHTML = product.images
         .map(
           (img, i) => `
