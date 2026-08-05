@@ -51,11 +51,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function render() {
     list.innerHTML = PRODUCTS.map((product) => {
-      const imagesHTML = product.images.length
-        ? product.images
-            .map((img) => `<img src="${img}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="" />`)
-            .join("")
-        : `<img src="${PLACEHOLDER_IMAGE}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="No image yet" />`;
+      const imagesHTML = product.images
+        .map(
+          (img, i) => `
+          <div style="position:relative;width:64px;height:64px;">
+            <img src="${img}" style="width:64px;height:64px;object-fit:cover;border-radius:8px;" alt="" />
+            <button class="delete-image-btn" data-product-id="${product.id}" data-image-index="${i}" aria-label="Remove this image" style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:#c0392b;color:#fff;border:2px solid #fff;cursor:pointer;font-size:.7rem;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;">✕</button>
+          </div>`
+        )
+        .join("");
 
       const pricesHTML = product.prices.length
         ? product.prices
@@ -199,6 +203,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         render();
         showToast(`Added ${weight} packaging`);
+      });
+    });
+
+    // ---- Delete an image ----
+    list.querySelectorAll(".delete-image-btn").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        const productId = btn.dataset.productId;
+        const index = Number(btn.dataset.imageIndex);
+        if (!confirm("Remove this image?")) return;
+
+        const product = PRODUCTS.find((p) => p.id === productId);
+        const newImages = product.images.filter((_, i) => i !== index);
+
+        if (isDatabaseConnected()) {
+          const { error } = await supabaseClient.from("products").update({ images: newImages }).eq("id", productId);
+          if (error) {
+            showToast("Could not remove image — sign in required.", true);
+            return;
+          }
+          await loadProducts();
+        } else {
+          product.images = newImages;
+        }
+        render();
+        showToast("Image removed");
       });
     });
 

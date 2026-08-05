@@ -46,16 +46,6 @@ const DEMO_PRODUCTS = [
   },
 ];
 
-// Shown at render time only (shop grid, product gallery, admin thumbnails)
-// when a product genuinely has zero images yet. This is a data: URI, never
-// written back to the database, so it can never get mixed into a real
-// image array the way the old "images/placeholder.jpg" string did.
-const PLACEHOLDER_IMAGE =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#F3E6D0"/><text x="200" y="210" font-family="sans-serif" font-size="20" fill="#B78B5C" text-anchor="middle">No image yet</text></svg>`
-  );
-
 function normalizeProduct(row) {
   return {
     id: row.id,
