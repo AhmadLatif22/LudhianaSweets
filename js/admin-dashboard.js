@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
   await loadProducts();
-  const orders = getAllOrders();
+  const orders = await loadOrders();
   const today = new Date().toDateString();
   const ordersToday = orders.filter((o) => new Date(o.createdAt).toDateString() === today).length;
   const revenue = orders.reduce((sum, o) => sum + o.total, 0);
-  const pending = orders.filter((o) => o.status === "pending").length;
+  const pending = orders.filter((o) => o.status === "pending" || o.status === "pending_whatsapp_confirmation").length;
   const lowStock = PRODUCTS.flatMap((p) => p.prices).filter((pr) => pr.stock < 10).length;
 
   document.getElementById("statsGrid").innerHTML = `

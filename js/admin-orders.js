@@ -1,6 +1,14 @@
-const ORDER_STATUSES = ["pending", "confirmed", "processing", "out_for_delivery", "delivered", "cancelled"];
+const ORDER_STATUSES = [
+  "pending",
+  "pending_whatsapp_confirmation",
+  "confirmed",
+  "processing",
+  "out_for_delivery",
+  "delivered",
+  "cancelled",
+];
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const tbody = document.getElementById("ordersTableBody");
 
   function render() {
@@ -27,12 +35,15 @@ document.addEventListener("DOMContentLoaded", () => {
       .join("");
 
     tbody.querySelectorAll("select[data-order]").forEach((select) => {
-      select.addEventListener("change", () => {
-        updateOrderStatus(select.dataset.order, select.value);
+      select.addEventListener("change", async () => {
+        await updateOrderStatus(select.dataset.order, select.value);
+        render();
         showToast("Order status updated");
       });
     });
   }
 
+  await loadOrders();
   render();
+  subscribeToOrderChanges(render); // live updates when the WhatsApp webhook confirms/cancels an order
 });

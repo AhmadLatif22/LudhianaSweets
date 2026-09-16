@@ -4,8 +4,7 @@
    ========================================================================== */
 
 const CART_KEY = "ls_cart";
-const SHIPPING_FLAT = 250;
-const FREE_SHIPPING_THRESHOLD = 3000;
+const COD_SHIPPING_CHARGE = 200;
 
 function formatPKR(amount) {
   return "Rs " + Math.round(amount).toLocaleString("en-PK");
@@ -67,11 +66,14 @@ function cartCount() {
   return getCart().reduce((sum, i) => sum + i.quantity, 0);
 }
 
-function cartShipping() {
+function cartShipping(paymentMethod) {
   const items = getCart();
   if (items.length === 0) return 0;
-  const sub = cartSubtotal();
-  return sub >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_FLAT;
+  // Cart drawer doesn't know the payment method yet (chosen at checkout),
+  // so it shows the COD estimate by default — checkout.html passes the
+  // actual selected method once one is picked.
+  if (paymentMethod && paymentMethod !== "cod") return 0;
+  return COD_SHIPPING_CHARGE;
 }
 
 function updateCartCount() {
@@ -140,6 +142,7 @@ function renderCartDrawer() {
       </div>
       <div class="summary-row"><span>Subtotal</span><span>${formatPKR(sub)}</span></div>
       <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatPKR(shipping)}</span></div>
+      <p style="font-size:.75rem;color:rgba(74,44,29,.5);margin:-4px 0 8px;">Free shipping when you pay online at checkout</p>
       <div class="summary-row total"><span>Total</span><span class="gold-text">${formatPKR(total)}</span></div>
       <a href="checkout.html" class="btn btn-primary btn-block">Proceed to Checkout</a>
       <button class="btn btn-outline btn-block" type="button" onclick="closeCart()">Continue Shopping</button>

@@ -58,8 +58,9 @@
     <circle id="checkCircle" cx="40" cy="40" r="36" fill="none" stroke="#C89B3C" stroke-width="4" />
     <path id="checkMark" d="M24 42 L35 53 L57 29" fill="none" stroke="#4A2C1D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
   </svg>
-  <h1>Order Confirmed!</h1>
-  <p style="color:rgba(74,44,29,.7);margin-top:8px;">Thank you — your barfi is being prepared with love.</p>
+  <h1 id="successHeading">Order Confirmed!</h1>
+  <p style="color:rgba(74,44,29,.7);margin-top:8px;" id="successSubtitle">Thank you — your barfi is being prepared with love.</p>
+  <p id="whatsappNote" style="display:none;background:rgba(200,155,60,.12);border:1px solid rgba(200,155,60,.3);border-radius:12px;padding:14px 18px;margin-top:16px;font-size:.9rem;"></p>
 
   <div class="order-info-box" id="orderInfoBox">
     <div class="row"><span>Order Number</span><span class="value" id="oiOrderNumber">—</span></div>
@@ -123,6 +124,8 @@
 <script src="js/cart.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/order-success.js"></script>
 </body>
 </html>

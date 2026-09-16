@@ -50,11 +50,35 @@ document.addEventListener("DOMContentLoaded", () => {
   // ---- Render order details ----
   const params = new URLSearchParams(window.location.search);
   const orderNumberFromUrl = params.get("order");
+  const isPendingWhatsApp = params.get("pending") === "whatsapp";
   const raw = localStorage.getItem("ls_last_order");
   const order = raw ? JSON.parse(raw) : null;
 
   const box = document.getElementById("orderInfoBox");
   const downloadBtn = document.getElementById("downloadInvoiceBtn");
+  const heading = document.getElementById("successHeading");
+  const subtitle = document.getElementById("successSubtitle");
+  const whatsappNote = document.getElementById("whatsappNote");
+
+  function applyStatusCopy(status) {
+    if (status === "pending_whatsapp_confirmation") {
+      heading.textContent = "Almost there — check WhatsApp!";
+      subtitle.textContent = "We've sent a message to confirm your order.";
+      whatsappNote.style.display = "block";
+      whatsappNote.textContent =
+        "Please reply on WhatsApp to confirm your order. It won't be prepared until you tap Confirm.";
+    } else if (status === "cancelled") {
+      heading.textContent = "Order Cancelled";
+      subtitle.textContent = "You cancelled this order on WhatsApp — no charge, nothing to do.";
+      whatsappNote.style.display = "none";
+    } else {
+      heading.textContent = "Order Confirmed!";
+      subtitle.textContent = "Thank you — your barfi is being prepared with love.";
+      whatsappNote.style.display = "none";
+    }
+  }
+
+  if (isPendingWhatsApp) applyStatusCopy("pending_whatsapp_confirmation");
 
   if (order && (!orderNumberFromUrl || order.orderNumber === orderNumberFromUrl)) {
     box.innerHTML = `
@@ -104,6 +128,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       doc.save(`${order.orderNumber}-invoice.pdf`);
     });
+
+    // ---- Live-update the moment the customer confirms/cancels on WhatsApp ----
+    if (isPendingWhatsApp && isDatabaseConnected()) {
+      supabaseClient
+        .channel(`order-${order.orderNumber}`)
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "orders", filter: `order_number=eq.${order.orderNumber}` },
+          (payload) => applyStatusCopy(payload.new.status)
+        )
+        .subscribe();
+    }
   } else {
     box.innerHTML = `<div class="row"><span>Order Number</span><span class="value">${orderNumberFromUrl || "—"}</span></div>`;
     downloadBtn.disabled = true;
