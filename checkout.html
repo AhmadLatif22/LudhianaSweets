@@ -101,11 +101,11 @@
           <div class="option-group">
             <p style="font-weight:600;font-size:.9rem;margin-bottom:10px;">Payment Method</p>
             <div class="payment-grid" id="paymentGrid">
-              <button type="button" class="payment-option active" data-method="visa">💳<span>Visa</span><span class="hint">Card payment</span></button>
+              <button type="button" class="payment-option" data-method="visa">💳<span>Visa</span><span class="hint">Card payment</span></button>
               <button type="button" class="payment-option" data-method="mastercard">💳<span>MasterCard</span><span class="hint">Card payment</span></button>
               <button type="button" class="payment-option" data-method="jazzcash">📱<span>JazzCash</span><span class="hint">Mobile wallet</span></button>
               <button type="button" class="payment-option" data-method="easypaisa">📱<span>EasyPaisa</span><span class="hint">Mobile wallet</span></button>
-              <button type="button" class="payment-option" data-method="cod">💵<span>Cash on Delivery</span><span class="hint">Pay on arrival</span></button>
+              <button type="button" class="payment-option active" data-method="cod">💵<span>Cash on Delivery</span><span class="hint">Pay on arrival</span></button>
             </div>
           </div>
 
@@ -180,6 +180,8 @@
 <!-- TODO(you): EmailJS order confirmation — sign up at https://www.emailjs.com,
      create a service + template, then set the IDs in js/checkout.js -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/products-data.js"></script>
 <script src="js/checkout.js"></script>
 </body>
