@@ -5,12 +5,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   let product;
   let selectedWeight;
   let quantity = 1;
+  let reviewFormRating = 5;
+  let reviewsChannel;
 
   function pickProduct() {
     product = (slug && getProductBySlug(slug)) || PRODUCTS[0];
+    if (!product) return;
     if (!selectedWeight || !product.prices.find((p) => p.weight === selectedWeight)) {
       selectedWeight = product.prices[0]?.weight;
     }
+  }
+
+  function renderEmptyState() {
+    document.querySelector(".product-detail-grid").innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:60px 20px;">
+        <h1 style="font-size:1.6rem;">No products yet</h1>
+        <p style="color:rgba(74,44,29,.6);margin-top:10px;">Add your first product from the admin panel to see it here.</p>
+      </div>`;
+    document.querySelector(".tabs").style.display = "none";
   }
 
   function currentPriceInfo() {
@@ -78,17 +90,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       .join("");
     document.getElementById("productStorage").textContent = product.storageInstructions;
 
-    // Reviews (site-wide REVIEWS list — swap for per-product reviews if you add that table)
-    document.getElementById("tab-reviews").innerHTML = REVIEWS.map(
-      (r) => `
-      <div class="review-item">
-        <div class="stars">${stars(r.rating)}</div>
-        <p style="font-size:.9rem;color:rgba(74,44,29,.75);">${r.comment}</p>
-        <p class="review-name">${r.name}</p>
-      </div>`
-    ).join("");
-
     refreshPriceAndStock();
+    renderReviewsTab();
+
+    // Re-subscribe to this product's reviews (in case the product changed)
+    if (reviewsChannel && typeof reviewsChannel.unsubscribe === "function") {
+      reviewsChannel.unsubscribe();
+    }
+    reviewsChannel = subscribeToReviews(product.id, renderReviewsTab);
   }
 
   function refreshPriceAndStock() {
@@ -119,6 +128,86 @@ document.addEventListener("DOMContentLoaded", async () => {
       addBtn.disabled = true;
       buyBtn.disabled = true;
     }
+  }
+
+  // ---- Reviews tab: list + "write a review" form (text + optional photo) ----
+  async function renderReviewsTab() {
+    const panel = document.getElementById("tab-reviews");
+    const reviews = await loadReviewsForProduct(product.id);
+
+    const listHtml = reviews.length
+      ? reviews
+          .map(
+            (r) => `
+        <div class="review-item">
+          <div class="stars">${starsMarkup(r.rating)}</div>
+          ${r.photo_url ? `<img src="${r.photo_url}" alt="Photo from ${r.name}'s review" class="review-photo" />` : ""}
+          <p style="font-size:.9rem;color:rgba(74,44,29,.75);">${r.comment || ""}</p>
+          <p class="review-name">${r.name}</p>
+        </div>`
+          )
+          .join("")
+      : `<p style="color:rgba(74,44,29,.5);font-size:.9rem;">No reviews yet — be the first to share yours.</p>`;
+
+    panel.innerHTML = `
+      <div id="reviewsList">${listHtml}</div>
+      <div class="review-form-wrap" style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(74,44,29,.1);max-width:480px;">
+        <h3 style="font-size:1.1rem;margin-bottom:14px;">Write a Review</h3>
+        <div id="reviewFormMsg" style="font-size:.85rem;margin-bottom:10px;"></div>
+        <form id="reviewForm">
+          <div class="field">
+            <label for="reviewName">Your Name</label>
+            <input class="input" id="reviewName" required />
+          </div>
+          <div class="field">
+            <label>Rating</label>
+            ${renderStarPickerHTML("starPicker", 5)}
+          </div>
+          <div class="field">
+            <label for="reviewComment">Your Review</label>
+            <textarea class="input" id="reviewComment" rows="3" required></textarea>
+          </div>
+          <div class="field">
+            <label for="reviewPhoto">Add a Photo (optional)</label>
+            <input type="file" id="reviewPhoto" accept="image/*" />
+          </div>
+          <button type="submit" class="btn btn-gold" id="reviewSubmitBtn">Submit Review</button>
+        </form>
+      </div>
+    `;
+
+    reviewFormRating = 5;
+    attachStarPicker("starPicker", (v) => (reviewFormRating = v));
+
+    document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msgEl = document.getElementById("reviewFormMsg");
+      const submitBtn = document.getElementById("reviewSubmitBtn");
+      const name = document.getElementById("reviewName").value.trim();
+      const comment = document.getElementById("reviewComment").value.trim();
+      const photoFile = document.getElementById("reviewPhoto").files[0] || null;
+      if (!name || !comment) return;
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting…";
+
+      const result = await submitReview({ productId: product.id, name, rating: reviewFormRating, comment, photoFile });
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Submit Review";
+
+      if (result.ok) {
+        msgEl.style.color = "#3f7d3f";
+        msgEl.textContent = "Thanks! Your review is awaiting approval and will appear here shortly.";
+        e.target.reset();
+      } else {
+        msgEl.style.color = "#b23a2e";
+        msgEl.textContent =
+          result.reason === "offline"
+            ? "Reviews are temporarily unavailable — please check back later."
+            : "Something went wrong — please try again.";
+      }
+    });
   }
 
   // ---- Quantity ----
@@ -171,9 +260,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ---- Load + realtime ----
   await loadProducts();
   pickProduct();
+  if (!product) {
+    renderEmptyState();
+    return;
+  }
   renderProduct();
   subscribeToProductChanges(() => {
     pickProduct();
+    if (!product) {
+      renderEmptyState();
+      return;
+    }
     renderProduct(); // price/stock/image edits from the admin appear immediately
   });
 });

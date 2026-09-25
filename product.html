@@ -3,46 +3,19 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ludhiana Special Barfi | Ludhiana Sweets</title>
-<meta name="description" content="Handcrafted barfi simmered slowly in pure desi ghee and full-cream khoya, finished with silver warq and pistachios. Available in 250g, 500g, and 1kg." />
+<title>Product | Ludhiana Sweets</title>
+<meta name="description" content="Handcrafted mithai from Ludhiana Sweets — made fresh with pure desi ghee and delivered nationwide." />
 <link rel="canonical" href="https://ludhianasweets.com/product.html" />
-<meta property="og:title" content="Ludhiana Special Barfi | Ludhiana Sweets" />
-<meta property="og:description" content="Handcrafted barfi simmered slowly in pure desi ghee and full-cream khoya, finished with silver warq and pistachios. Available in 250g, 500g, and 1kg." />
+<meta property="og:title" content="Ludhiana Sweets" />
 <meta property="og:type" content="website" />
-<meta property="og:image" content="https://ludhianasweets.com/images/barfi-1.jpg" />
 <meta property="og:locale" content="en_PK" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Ludhiana Special Barfi | Ludhiana Sweets" />
-<meta name="twitter:description" content="Handcrafted barfi simmered slowly in pure desi ghee and full-cream khoya, finished with silver warq and pistachios. Available in 250g, 500g, and 1kg." />
-<meta name="twitter:image" content="https://ludhianasweets.com/images/barfi-1.jpg" />
 <meta name="theme-color" content="#4A2C1D" />
 <link rel="icon" href="images/favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="css/style.css" />
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "Ludhiana Special Barfi",
-  "image": ["https://ludhianasweets.com/images/barfi-1.jpg"],
-  "description": "Handcrafted barfi simmered slowly in pure desi ghee and full-cream khoya, finished with silver warq and pistachios.",
-  "brand": { "@type": "Brand", "name": "Ludhiana Sweets" },
-  "offers": {
-    "@type": "AggregateOffer",
-    "priceCurrency": "PKR",
-    "lowPrice": "850",
-    "highPrice": "3100",
-    "availability": "https://schema.org/InStock"
-  },
-  "aggregateRating": {
-    "@type": "AggregateRating",
-    "ratingValue": "4.9",
-    "reviewCount": "128"
-  }
-}
-</script>
+<link rel="stylesheet" href="css/reviews.css" />
 </head>
 <body>
   <a href="#main-content" class="skip-link">Skip to content</a>
@@ -79,29 +52,20 @@
     <div class="product-detail-grid">
       <div class="reveal">
         <div class="gallery-main" id="galleryMain">
-          <img src="images/barfi-1.jpg" id="galleryMainImg" alt="Ludhiana Special Barfi — image 1 of 4" width="500" height="500" />
+          <img src="" id="galleryMainImg" alt="" width="500" height="500" style="display:none;" />
         </div>
-        <div class="gallery-thumbs" id="galleryThumbs">
-          <button class="active" data-img="images/barfi-1.jpg" aria-label="View image 1"><img src="images/barfi-1.jpg" alt="" /></button>
-          <button data-img="images/barfi-2.jpg" aria-label="View image 2"><img src="images/barfi-2.jpg" alt="" /></button>
-          <button data-img="images/barfi-3.jpg" aria-label="View image 3"><img src="images/barfi-3.jpg" alt="" /></button>
-          <button data-img="images/barfi-4.jpg" aria-label="View image 4"><img src="images/barfi-4.jpg" alt="" /></button>
-        </div>
+        <div class="gallery-thumbs" id="galleryThumbs"></div>
       </div>
 
       <div class="reveal" style="transition-delay:.1s">
-        <div class="rating" id="productRating" style="color:var(--gold);font-size:.9rem;margin-bottom:10px;">★★★★★ <span style="color:rgba(74,44,29,.5)">4.9 (128 reviews)</span></div>
-        <h1 id="productName">Ludhiana Special Barfi</h1>
-        <p id="productTagline" style="color:rgba(74,44,29,.7);margin-top:8px;">Handcrafted with pure desi ghee, the traditional Ludhiana way</p>
-        <p class="product-price" id="productPrice">Rs 850</p>
+        <div class="rating" id="productRating" style="color:var(--gold);font-size:.9rem;margin-bottom:10px;"></div>
+        <h1 id="productName">Loading…</h1>
+        <p id="productTagline" style="color:rgba(74,44,29,.7);margin-top:8px;"></p>
+        <p class="product-price" id="productPrice"></p>
 
         <div class="option-group">
           <p>Weight</p>
-          <div class="weight-options" id="weightOptions">
-            <button class="active" data-weight="250g" data-price="850">250g</button>
-            <button data-weight="500g" data-price="1600">500g</button>
-            <button data-weight="1kg" data-price="3100">1kg</button>
-          </div>
+          <div class="weight-options" id="weightOptions"></div>
         </div>
 
         <div class="option-group">
@@ -113,7 +77,7 @@
           </div>
         </div>
 
-        <p class="stock-status in" id="stockStatus">In stock — 40 available</p>
+        <p class="stock-status" id="stockStatus"></p>
 
         <div class="purchase-actions">
           <button class="btn btn-outline" id="addToCartBtn">Add to Cart</button>
@@ -131,17 +95,10 @@
         <button data-tab="reviews">Reviews</button>
       </div>
       <div class="tab-panel active" id="tab-ingredients">
-        <ul class="ingredients-list" id="productIngredients">
-          <li>Full-cream khoya (milk solids)</li>
-          <li>Pure desi ghee</li>
-          <li>Cane sugar</li>
-          <li>Cardamom</li>
-          <li>Silver warq</li>
-          <li>Pistachios &amp; almonds</li>
-        </ul>
+        <ul class="ingredients-list" id="productIngredients"></ul>
       </div>
       <div class="tab-panel" id="tab-storage">
-        <p id="productStorage" style="max-width:640px;color:rgba(74,44,29,.75);">Store in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days. Bring to room temperature before serving for the best texture.</p>
+        <p id="productStorage" style="max-width:640px;color:rgba(74,44,29,.75);"></p>
       </div>
       <div class="tab-panel" id="tab-delivery">
         <p style="max-width:640px;color:rgba(74,44,29,.75);">Delivered fresh within 1-4 days depending on your city, in sealed insulated packaging. Cash on Delivery available nationwide, alongside card and mobile wallet payments.</p>
@@ -205,6 +162,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/products-data.js"></script>
+<script src="js/reviews.js"></script>
 <script src="js/product.js"></script>
 </body>
 </html>
