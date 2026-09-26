@@ -59,58 +59,648 @@
       <div>
         <h2 style="font-size:1.3rem;margin-bottom:20px;">Delivery Details</h2>
         <form id="checkoutForm" novalidate>
-          <div class="field-row">
-            <div class="field">
-              <label for="fullName">Full Name</label>
-              <input class="input" type="text" id="fullName" name="fullName" required minlength="2" placeholder="Ayesha Khan" />
-              <p class="error" data-error-for="fullName"></p>
-            </div>
-            <div class="field">
-              <label for="email">Email Address</label>
-              <input class="input" type="email" id="email" name="email" required placeholder="you@example.com" />
-              <p class="error" data-error-for="email"></p>
-            </div>
-          </div>
-          <div class="field-row">
-            <div class="field">
-              <label for="phone">Phone Number</label>
-              <input class="input" type="tel" id="phone" name="phone" required minlength="10" placeholder="03001234567" />
-              <p class="error" data-error-for="phone"></p>
-            </div>
-            <div class="field">
-              <label for="city">City</label>
-              <input class="input" type="text" id="city" name="city" required placeholder="Sargodha" />
-              <p class="error" data-error-for="city"></p>
-            </div>
-          </div>
-          <div class="field">
-            <label for="address">Delivery Address</label>
-            <textarea class="input" id="address" name="address" rows="3" required minlength="6" placeholder="House #, Street, Area"></textarea>
-            <p class="error" data-error-for="address"></p>
-          </div>
-          <div class="field" style="max-width:220px;">
-            <label for="postalCode">Postal Code</label>
-            <input class="input" type="text" id="postalCode" name="postalCode" required placeholder="40100" />
-            <p class="error" data-error-for="postalCode"></p>
-          </div>
-          <div class="field">
-            <label for="notes">Order Notes (optional)</label>
-            <textarea class="input" id="notes" name="notes" rows="2" placeholder="Any delivery instructions or gift notes"></textarea>
-          </div>
 
-          <div class="option-group">
-            <p style="font-weight:600;font-size:.9rem;margin-bottom:10px;">Payment Method</p>
-            <div class="payment-grid" id="paymentGrid">
-              <button type="button" class="payment-option" data-method="visa">💳<span>Visa</span><span class="hint">Card payment</span></button>
-              <button type="button" class="payment-option" data-method="mastercard">💳<span>MasterCard</span><span class="hint">Card payment</span></button>
-              <button type="button" class="payment-option" data-method="jazzcash">📱<span>JazzCash</span><span class="hint">Mobile wallet</span></button>
-              <button type="button" class="payment-option" data-method="easypaisa">📱<span>EasyPaisa</span><span class="hint">Mobile wallet</span></button>
-              <button type="button" class="payment-option active" data-method="cod">💵<span>Cash on Delivery</span><span class="hint">Pay on arrival</span></button>
-            </div>
-          </div>
+  <!-- ===================== CONTACT ===================== -->
+  <div class="checkout-section">
+    <div class="checkout-section-heading">
+      <h2>Contact</h2>
+    </div>
 
-          <button type="submit" class="btn btn-primary btn-block" id="placeOrderBtn" style="margin-top:10px;">Place Order</button>
-        </form>
+    <div class="field">
+      <label for="email">Email Address</label>
+      <input
+        class="input"
+        type="email"
+        id="email"
+        name="email"
+        required
+        placeholder="you@example.com"
+      />
+      <p class="error" data-error-for="email"></p>
+    </div>
+
+    <label class="checkout-checkbox">
+      <input type="checkbox" id="marketingConsent" />
+      <span>Email me with news and special offers</span>
+    </label>
+  </div>
+
+
+  <!-- ===================== DELIVERY ===================== -->
+  <div class="checkout-section">
+    <div class="checkout-section-heading">
+      <h2>Delivery</h2>
+      <p>Enter your delivery details to receive your order.</p>
+    </div>
+
+    <div class="field">
+      <label for="country">Country / Region</label>
+      <select class="input" id="country" name="country">
+        <option value="Pakistan" selected>Pakistan</option>
+      </select>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="firstName">First Name</label>
+        <input
+          class="input"
+          type="text"
+          id="firstName"
+          name="firstName"
+          required
+          placeholder="Ahmad"
+        />
+        <p class="error" data-error-for="firstName"></p>
+      </div>
+
+      <div class="field">
+        <label for="lastName">Last Name</label>
+        <input
+          class="input"
+          type="text"
+          id="lastName"
+          name="lastName"
+          required
+          placeholder="Latif"
+        />
+        <p class="error" data-error-for="lastName"></p>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="address">Address</label>
+      <input
+        class="input"
+        type="text"
+        id="address"
+        name="address"
+        required
+        placeholder="House #, Street, Area"
+      />
+      <p class="error" data-error-for="address"></p>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="city">City</label>
+
+        <select class="input" id="city" name="city" required>
+  <option value="">Select city</option>
+
+  <option value="Abbottabad">Abbottabad</option>
+  <option value="Abdul Hakim">Abdul Hakim</option>
+  <option value="Adda Johal">Adda Johal</option>
+  <option value="Ahmedpur East">Ahmedpur East</option>
+  <option value="Akora Khattak">Akora Khattak</option>
+  <option value="Ali Pur">Ali Pur</option>
+  <option value="Alipur Chatha">Alipur Chatha</option>
+  <option value="Arifwala">Arifwala</option>
+  <option value="Attock">Attock</option>
+
+  <option value="Badin">Badin</option>
+  <option value="Baddomalhi">Baddomalhi</option>
+  <option value="Bahawalnagar">Bahawalnagar</option>
+  <option value="Bahawalpur">Bahawalpur</option>
+  <option value="Balakot">Balakot</option>
+  <option value="Bannu">Bannu</option>
+  <option value="Bara">Bara</option>
+  <option value="Barikot">Barikot</option>
+  <option value="Basirpur">Basirpur</option>
+  <option value="Batkhela">Batkhela</option>
+  <option value="Battagram">Battagram</option>
+  <option value="Bhalwal">Bhalwal</option>
+  <option value="Bhakkar">Bhakkar</option>
+  <option value="Bhera">Bhera</option>
+  <option value="Bhimber">Bhimber</option>
+  <option value="Burewala">Burewala</option>
+
+  <option value="Chak Jhumra">Chak Jhumra</option>
+  <option value="Chakwal">Chakwal</option>
+  <option value="Charsadda">Charsadda</option>
+  <option value="Chichawatni">Chichawatni</option>
+  <option value="Chiniot">Chiniot</option>
+  <option value="Chishtian">Chishtian</option>
+  <option value="Chitral">Chitral</option>
+  <option value="Chunian">Chunian</option>
+
+  <option value="Dadu">Dadu</option>
+  <option value="Daska">Daska</option>
+  <option value="Dera Ghazi Khan">Dera Ghazi Khan</option>
+  <option value="Dera Ismail Khan">Dera Ismail Khan</option>
+  <option value="Dera Murad Jamali">Dera Murad Jamali</option>
+  <option value="Dina">Dina</option>
+  <option value="Dipalpur">Dipalpur</option>
+  <option value="Dir">Dir</option>
+
+  <option value="Faisalabad">Faisalabad</option>
+  <option value="Fateh Jang">Fateh Jang</option>
+  <option value="Fort Abbas">Fort Abbas</option>
+
+  <option value="Ghotki">Ghotki</option>
+  <option value="Gilgit">Gilgit</option>
+  <option value="Gojra">Gojra</option>
+  <option value="Gujar Khan">Gujar Khan</option>
+  <option value="Gujranwala">Gujranwala</option>
+  <option value="Gujrat">Gujrat</option>
+
+  <option value="Hafizabad">Hafizabad</option>
+  <option value="Hangu">Hangu</option>
+  <option value="Haripur">Haripur</option>
+  <option value="Haroonabad">Haroonabad</option>
+  <option value="Hasilpur">Hasilpur</option>
+  <option value="Hassan Abdal">Hassan Abdal</option>
+  <option value="Haveli Lakha">Haveli Lakha</option>
+  <option value="Haveli">Haveli</option>
+  <option value="Hub">Hub</option>
+  <option value="Hujra Shah Muqeem">Hujra Shah Muqeem</option>
+  <option value="Hyderabad">Hyderabad</option>
+
+  <option value="Islamabad">Islamabad</option>
+
+  <option value="Jacobabad">Jacobabad</option>
+  <option value="Jahanian">Jahanian</option>
+  <option value="Jalalpur Jattan">Jalalpur Jattan</option>
+  <option value="Jalalpur Pirwala">Jalalpur Pirwala</option>
+  <option value="Jampur">Jampur</option>
+  <option value="Jaranwala">Jaranwala</option>
+  <option value="Jatoi">Jatoi</option>
+  <option value="Jauharabad">Jauharabad</option>
+  <option value="Jhang">Jhang</option>
+  <option value="Jhelum">Jhelum</option>
+  <option value="Kabirwala">Kabirwala</option>
+
+  <option value="Kahuta">Kahuta</option>
+  <option value="Kamalia">Kamalia</option>
+  <option value="Kamoke">Kamoke</option>
+  <option value="Kandhkot">Kandhkot</option>
+  <option value="Karachi">Karachi</option>
+  <option value="Karak">Karak</option>
+  <option value="Kasur">Kasur</option>
+  <option value="Khairpur">Khairpur</option>
+  <option value="Khanewal">Khanewal</option>
+  <option value="Khanpur">Khanpur</option>
+  <option value="Kharian">Kharian</option>
+  <option value="Khushab">Khushab</option>
+  <option value="Khuzdar">Khuzdar</option>
+  <option value="Kohat">Kohat</option>
+  <option value="Kot Addu">Kot Addu</option>
+  <option value="Kot Momin">Kot Momin</option>
+  <option value="Kot Radha Kishan">Kot Radha Kishan</option>
+  <option value="Kotli">Kotli</option>
+  <option value="Kotri">Kotri</option>
+
+  <option value="Lahore">Lahore</option>
+  <option value="Lakki Marwat">Lakki Marwat</option>
+  <option value="Lalamusa">Lalamusa</option>
+  <option value="Larkana">Larkana</option>
+  <option value="Layyah">Layyah</option>
+  <option value="Liaquatpur">Liaquatpur</option>
+  <option value="Lodhran">Lodhran</option>
+
+  <option value="Mailsi">Mailsi</option>
+  <option value="Malakand">Malakand</option>
+  <option value="Mandi Bahauddin">Mandi Bahauddin</option>
+  <option value="Mansehra">Mansehra</option>
+  <option value="Mardan">Mardan</option>
+  <option value="Mastung">Mastung</option>
+  <option value="Matli">Matli</option>
+  <option value="Mian Channu">Mian Channu</option>
+  <option value="Mianwali">Mianwali</option>
+  <option value="Mingora">Mingora</option>
+  <option value="Mirpur">Mirpur</option>
+  <option value="Mirpur Khas">Mirpur Khas</option>
+  <option value="Multan">Multan</option>
+  <option value="Muridke">Muridke</option>
+  <option value="Murree">Murree</option>
+  <option value="Muzaffarabad">Muzaffarabad</option>
+  <option value="Muzaffargarh">Muzaffargarh</option>
+
+  <option value="Nankana Sahib">Nankana Sahib</option>
+  <option value="Narowal">Narowal</option>
+  <option value="Nawabshah">Nawabshah</option>
+  <option value="Nowshera">Nowshera</option>
+  <option value="Nowshera Virkan">Nowshera Virkan</option>
+
+  <option value="Okara">Okara</option>
+
+  <option value="Pakpattan">Pakpattan</option>
+  <option value="Pano Aqil">Pano Aqil</option>
+  <option value="Pasrur">Pasrur</option>
+  <option value="Pattoki">Pattoki</option>
+  <option value="Peshawar">Peshawar</option>
+  <option value="Phalia">Phalia</option>
+  <option value="Pind Dadan Khan">Pind Dadan Khan</option>
+  <option value="Pindi Bhattian">Pindi Bhattian</option>
+  <option value="Pir Mahal">Pir Mahal</option>
+
+  <option value="Quetta">Quetta</option>
+
+  <option value="Rahim Yar Khan">Rahim Yar Khan</option>
+  <option value="Rajanpur">Rajanpur</option>
+  <option value="Rawalakot">Rawalakot</option>
+  <option value="Rawalpindi">Rawalpindi</option>
+  <option value="Renala Khurd">Renala Khurd</option>
+  <option value="Risalpur">Risalpur</option>
+
+  <option value="Sadiqabad">Sadiqabad</option>
+  <option value="Sahiwal">Sahiwal</option>
+  <option value="Sambrial">Sambrial</option>
+  <option value="Samundri">Samundri</option>
+  <option value="Sanghar">Sanghar</option>
+  <option value="Sangla Hill">Sangla Hill</option>
+  <option value="Sargodha">Sargodha</option>
+  <option value="Shahdadkot">Shahdadkot</option>
+  <option value="Shahdadpur">Shahdadpur</option>
+  <option value="Shahkot">Shahkot</option>
+  <option value="Shakargarh">Shakargarh</option>
+  <option value="Sheikhupura">Sheikhupura</option>
+  <option value="Shikarpur">Shikarpur</option>
+  <option value="Shorkot">Shorkot</option>
+  <option value="Shujaabad">Shujaabad</option>
+  <option value="Sialkot">Sialkot</option>
+  <option value="Sibi">Sibi</option>
+  <option value="Skardu">Skardu</option>
+  <option value="Sukkur">Sukkur</option>
+  <option value="Swabi">Swabi</option>
+  <option value="Swat">Swat</option>
+
+  <option value="Talagang">Talagang</option>
+  <option value="Tando Adam">Tando Adam</option>
+  <option value="Tando Allahyar">Tando Allahyar</option>
+  <option value="Tando Muhammad Khan">Tando Muhammad Khan</option>
+  <option value="Tank">Tank</option>
+  <option value="Taxila">Taxila</option>
+  <option value="Toba Tek Singh">Toba Tek Singh</option>
+  <option value="Turbat">Turbat</option>
+
+  <option value="Umerkot">Umerkot</option>
+
+  <option value="Vehari">Vehari</option>
+
+  <option value="Wah Cantt">Wah Cantt</option>
+  <option value="Wazirabad">Wazirabad</option>
+
+  <option value="Yazman">Yazman</option>
+
+  <option value="Zafarwal">Zafarwal</option>
+  <option value="Zhob">Zhob</option>
+</select>
+
+        <p class="error" data-error-for="city"></p>
+      </div>
+
+      <div class="field">
+        <label for="postalCode">Postal Code <span>(optional)</span></label>
+        <input
+          class="input"
+          type="text"
+          id="postalCode"
+          name="postalCode"
+          placeholder="40100"
+        />
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="phone">Phone Number</label>
+      <input
+        class="input"
+        type="tel"
+        id="phone"
+        name="phone"
+        required
+        placeholder="+92 300 1234567"
+      />
+      <p class="error" data-error-for="phone"></p>
+    </div>
+
+    <label class="checkout-checkbox">
+      <input type="checkbox" id="saveInformation" />
+      <span>Save this information for next time</span>
+    </label>
+  </div>
+
+
+  <!-- ===================== SHIPPING ===================== -->
+  <div class="checkout-section">
+    <div class="checkout-section-heading">
+      <h2>Shipping Method</h2>
+      <p>Shipping depends on your selected payment method.</p>
+    </div>
+
+    <div class="shipping-methods">
+
+      <!-- COD -->
+      <button
+        type="button"
+        class="shipping-option"
+        id="shippingCod"
+        data-shipping-type="cod"
+      >
+        <div class="checkout-radio">
+          <span></span>
+        </div>
+
+        <div class="shipping-icon">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+            <path d="M3 6h11v10H3z"></path>
+            <path d="M14 10h4l3 3v3h-7z"></path>
+            <circle cx="7" cy="18" r="2"></circle>
+            <circle cx="18" cy="18" r="2"></circle>
+          </svg>
+        </div>
+
+        <div class="shipping-option-info">
+          <strong>Cash on Delivery (COD)</strong>
+          <span>Pay when your order arrives</span>
+        </div>
+
+        <div class="shipping-price">
+          <strong>Rs 200</strong>
+          <small>Shipping</small>
+        </div>
+      </button>
+
+
+      <!-- PREPAID -->
+      <button
+        type="button"
+        class="shipping-option active"
+        id="shippingPrepaid"
+        data-shipping-type="prepaid"
+      >
+        <div class="checkout-radio">
+          <span></span>
+        </div>
+
+        <div class="payment-icon">
+          💳
+        </div>
+
+        <div class="shipping-option-info">
+          <strong>Prepaid Order</strong>
+          <span>Card, JazzCash or EasyPaisa</span>
+        </div>
+
+        <div class="shipping-price">
+          <strong>Rs 0</strong>
+          <small class="free-shipping-label">FREE SHIPPING</small>
+        </div>
+      </button>
+
+    </div>
+  </div>
+
+
+  <!-- ===================== PAYMENT ===================== -->
+  <div class="checkout-section">
+    <div class="checkout-section-heading">
+      <h2>Payment</h2>
+      <p>All transactions are secure and encrypted.</p>
+    </div>
+
+    <input
+      type="hidden"
+      name="paymentMethod"
+      id="paymentMethod"
+      value="card"
+    />
+
+    <div class="checkout-payment-list">
+
+      <!-- CARD -->
+      <button
+        type="button"
+        class="checkout-payment-option active"
+        data-method="card"
+      >
+        <div class="checkout-radio">
+          <span></span>
+        </div>
+
+        <div class="payment-option-info">
+          <strong>Debit / Credit Card</strong>
+          <span>Visa & MasterCard</span>
+        </div>
+
+        <div class="payment-brands">
+          <span class="payment-brand visa">VISA</span>
+          <span class="payment-brand mastercard">
+            <i></i><i></i>
+          </span>
+        </div>
+      </button>
+
+
+      <!-- JAZZCASH -->
+<button
+  type="button"
+  class="checkout-payment-option"
+  data-method="jazzcash"
+>
+  <div class="checkout-radio">
+    <span></span>
+  </div>
+
+  <div class="payment-option-info">
+    <strong>JazzCash</strong>
+    <span>Pay securely using your JazzCash wallet</span>
+  </div>
+
+  <div class="payment-brands">
+    <img
+      src="images/jazzcash.png"
+      alt="JazzCash"
+      class="payment-logo jazzcash-logo"
+    />
+  </div>
+</button>
+
+
+<!-- EASYPAISA -->
+<button
+  type="button"
+  class="checkout-payment-option"
+  data-method="easypaisa"
+>
+  <div class="checkout-radio">
+    <span></span>
+  </div>
+
+  <div class="payment-option-info">
+    <strong>EasyPaisa</strong>
+    <span>Pay securely using your EasyPaisa wallet</span>
+  </div>
+
+  <div class="payment-brands">
+    <img
+      src="images/easypaisa.jpg"
+      alt="EasyPaisa"
+      class="payment-logo easypaisa-logo"
+    />
+  </div>
+</button>
+
+
+      <!-- COD -->
+      <button
+        type="button"
+        class="checkout-payment-option"
+        data-method="cod"
+      >
+        <div class="checkout-radio">
+          <span></span>
+        </div>
+
+        <div class="payment-option-info">
+          <strong>Cash on Delivery</strong>
+          <span>Pay when your order arrives</span>
+        </div>
+      </button>
+
+    </div>
+
+    <div class="payment-shipping-notice" id="paymentShippingNotice">
+      <span>✓</span>
+      Free shipping applied for prepaid payment
+    </div>
+  </div>
+
+
+  <!-- ===================== BILLING ===================== -->
+  <div class="checkout-section">
+    <div class="checkout-section-heading">
+      <h2>Billing Address</h2>
+      <p>Select the address associated with your payment method.</p>
+    </div>
+
+    <div class="billing-options">
+
+      <label class="billing-option active">
+        <input
+          type="radio"
+          name="billingAddress"
+          value="same"
+          checked
+        />
+
+        <span class="billing-radio"></span>
+
+        <span>
+          <strong>Same as shipping address</strong>
+        </span>
+      </label>
+
+      <label class="billing-option">
+        <input
+          type="radio"
+          name="billingAddress"
+          value="different"
+        />
+
+        <span class="billing-radio"></span>
+
+        <span>
+          <strong>Use a different billing address</strong>
+        </span>
+      </label>
+
+    </div>
+
+    <div id="differentBillingAddress" class="different-billing">
+
+      <div class="field-row">
+        <div class="field">
+          <label for="billingFirstName">First Name</label>
+          <input
+            class="input"
+            id="billingFirstName"
+            type="text"
+            name="billingFirstName"
+          />
+        </div>
+
+        <div class="field">
+          <label for="billingLastName">Last Name</label>
+          <input
+            class="input"
+            id="billingLastName"
+            type="text"
+            name="billingLastName"
+          />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="billingAddressInput">Address</label>
+        <input
+          class="input"
+          id="billingAddressInput"
+          type="text"
+          name="billingAddressInput"
+        />
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="billingCity">City</label>
+          <input
+            class="input"
+            id="billingCity"
+            type="text"
+            name="billingCity"
+          />
+        </div>
+
+        <div class="field">
+          <label for="billingPostalCode">Postal Code</label>
+          <input
+            class="input"
+            id="billingPostalCode"
+            type="text"
+            name="billingPostalCode"
+          />
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ORDER NOTES -->
+  <div class="checkout-section">
+    <div class="field">
+      <label for="notes">Order Notes <span>(optional)</span></label>
+
+      <textarea
+        class="input"
+        id="notes"
+        name="notes"
+        rows="3"
+        placeholder="Delivery instructions, gift message, etc."
+      ></textarea>
+    </div>
+  </div>
+
+
+  <button
+    type="submit"
+    class="btn btn-primary btn-block checkout-submit"
+    id="placeOrderBtn"
+  >
+    <span>🔒</span>
+    Place Order
+  </button>
+
+</form>
       </div>
 
       <div class="order-summary-box">
