@@ -14,12 +14,8 @@
 
 let PRODUCTS = [];
 
-const REVIEWS = [
-  { id: "r1", name: "Ayesha K.", rating: 5, comment: "Tastes exactly like the barfi from my grandmother's hometown. Rich, not overly sweet, and beautifully packed." },
-  { id: "r2", name: "Bilal M.", rating: 5, comment: "Ordered 1kg for Eid and it disappeared in a day. Ordering again for the whole family this time." },
-  { id: "r3", name: "Sana R.", rating: 5, comment: "Delivery was fast and everything arrived fresh. The ghee aroma alone was worth it." },
-  { id: "r4", name: "Usman T.", rating: 4, comment: "Excellent taste and texture. Would love a smaller trial pack option too." },
-];
+// Real customer reviews are loaded from Supabase; never show invented testimonials.
+const REVIEWS = [];
 
 // Shown only if Supabase isn't configured yet, or a query fails, so pages
 // never render completely empty during setup.
@@ -33,7 +29,7 @@ const DEMO_PRODUCTS = [
       "Our signature barfi is simmered slowly in pure desi ghee and full-cream khoya, finished with a dusting of silver warq and slivered pistachios.",
     ingredients: ["Full-cream khoya", "Pure desi ghee", "Cane sugar", "Cardamom", "Silver warq", "Pistachios & almonds"],
     storageInstructions: "Store in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days.",
-    images: ["images/barfi-1.jpg", "images/barfi-2.jpg", "images/barfi-3.jpg", "images/barfi-4.jpg"],
+    images: ["images/barfi.png"],
     prices: [
       { weight: "250g", price: 850, stock: 40 },
       { weight: "500g", price: 1600, stock: 35 },
@@ -58,7 +54,7 @@ function normalizeProduct(row) {
     images: row.images || [],
     prices: (row.product_prices || []).map((p) => ({ id: p.id, weight: p.weight, price: Number(p.price), stock: p.stock })),
     category: row.category || "",
-    rating: row.rating ? Number(row.rating) : 5,
+    rating: row.rating != null ? Number(row.rating) : 0,
     reviewCount: row.review_count || 0,
     featured: !!row.featured,
   };
@@ -77,9 +73,9 @@ async function loadProducts() {
 
   if (error) {
     console.error("Supabase error loading products:", error.message);
-    PRODUCTS = DEMO_PRODUCTS;
+    PRODUCTS = [];
   } else if (!data || data.length === 0) {
-    PRODUCTS = DEMO_PRODUCTS;
+    PRODUCTS = [];
   } else {
     PRODUCTS = data.map(normalizeProduct);
   }

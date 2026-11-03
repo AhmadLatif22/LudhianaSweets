@@ -1,74 +1,18 @@
-/* ==========================================================================
-   admin-data.js — reads/writes real orders from Supabase once connected.
-   Falls back to the browser's localStorage copy (from checkout.js) if
-   Supabase isn't configured yet, so the demo flow still works.
-   ========================================================================== */
-
-let ORDERS = [];
-
-function normalizeOrder(row) {
-  return {
-    id: row.id,
-    orderNumber: row.order_number,
-    items: row.items,
-    customer: row.customer,
-    paymentMethod: row.payment_method,
-    subtotal: row.subtotal,
-    shipping: row.shipping,
-    total: row.total,
-    status: row.status,
-    estimatedDelivery: row.estimated_delivery,
-    createdAt: row.created_at,
-  };
+let ORDERS=[];
+function escapeAdmin(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function normalizeOrder(row) {return { ...row,id:row.id,orderNumber:row.order_number,items:row.items||[],customer:row.customer||{},paymentMethod:row.payment_method,paymentStatus:row.payment_status,subtotal:row.subtotal,shipping:row.shipping,total:row.total,status:row.status,createdAt:row.created_at,updatedAt:row.updated_at,estimatedDelivery:row.estimated_delivery,trackingNumber:row.tracking_number,trackingUrl:row.tracking_url,courier:row.courier};}
+async function adminRequest(path, options={}) {
+  const {data:{session}}=await supabaseClient.auth.getSession();
+  if(!session?.access_token)throw Error('Sign in as an administrator to continue');
+  const result=await fetch(path,{...options,headers:{Authorization:`Bearer ${session.access_token}`,'Content-Type':'application/json',...options.headers}});
+  const body=await result.json().catch(()=>({}));
+  if(!result.ok)throw Error(body.error||'Admin request failed');
+  return body;
 }
-
-async function loadOrders() {
-  if (!isDatabaseConnected()) {
-    try {
-      ORDERS = JSON.parse(localStorage.getItem("ls_all_orders")) || [];
-    } catch {
-      ORDERS = [];
-    }
-    return ORDERS;
-  }
-
-  const { data, error } = await supabaseClient
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  ORDERS = error ? [] : data.map(normalizeOrder);
-  return ORDERS;
+async function loadOrders(){const r=await adminRequest('/api/admin-orders');ORDERS=(r.orders||[]).map(normalizeOrder);return ORDERS;}
+function getAllOrders(){return ORDERS;}
+async function updateOrderStatus(orderNumber,status,shipping={}) {
+  await adminRequest('/api/admin-orders',{method:'PATCH',body:JSON.stringify({orderNumber,status,...shipping})});
+  return loadOrders();
 }
-
-function getAllOrders() {
-  return ORDERS;
-}
-
-async function updateOrderStatus(orderNumber, status) {
-  if (isDatabaseConnected()) {
-    const { error } = await supabaseClient.from("orders").update({ status }).eq("order_number", orderNumber);
-    if (error) {
-      showToast("Could not update — sign in required.", true);
-      return ORDERS;
-    }
-    await loadOrders();
-  } else {
-    ORDERS = ORDERS.map((o) => (o.orderNumber === orderNumber ? { ...o, status } : o));
-    localStorage.setItem("ls_all_orders", JSON.stringify(ORDERS));
-  }
-  return ORDERS;
-}
-
-let _ordersChannel = null;
-
-function subscribeToOrderChanges(callback) {
-  if (!isDatabaseConnected() || _ordersChannel) return;
-  _ordersChannel = supabaseClient
-    .channel("orders-changes")
-    .on("postgres_changes", { event: "*", schema: "public", table: "orders" }, async () => {
-      await loadOrders();
-      callback();
-    })
-    .subscribe();
-}
+function subscribeToOrderChanges(callback){/* Protected order data is never sent on anonymous public Realtime channels. Use manual refresh. */}

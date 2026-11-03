@@ -12,7 +12,7 @@
 <body>
 <div class="admin-layout">
   <aside class="admin-sidebar">
-    <a href="index.html" class="logo"><img src="images/logoo.png" alt="Ludhiana Sweets" class="logo-img" /></a>
+    <a href="../index.html" class="logo"><img src="../images/logoo.png" alt="Ludhiana Sweets" class="logo-img" /></a>
     <nav>
       <a href="dashboard.html">📊 Overview</a>
       <a href="orders.html" class="active">🛒 Orders</a>
@@ -26,16 +26,16 @@
   <div class="admin-main">
 
     <h1 style="font-size:1.6rem;">Orders</h1>
-    <p style="color:rgba(74,44,29,.6);font-size:.9rem;margin-top:6px;margin-bottom:24px;">
-      Orders placed through checkout.html on this browser. Connect a real database to share
-      this across devices/staff.
-    </p>
+    <p style="color:#806d5b;margin-top:8px">Manage confirmations, preparation and deliveries. Order records are stored securely in Supabase.</p>
+    <div class="admin-toolbar"><input class="input" id="ordersSearch" placeholder="Search order, customer or phone" aria-label="Search orders" /><select class="input" id="ordersFilter" aria-label="Filter order status"><option value="">All statuses</option><option value="pending_whatsapp_confirmation">Awaiting WhatsApp</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select><button class="btn btn-outline" id="refreshOrders">Refresh</button></div>
+    <p id="ordersInfo" aria-live="polite" style="font-size:.83rem;color:#806d5b;margin-bottom:15px">Loading orders…</p>
     <div style="overflow-x:auto;">
       <table class="admin-table" id="ordersTable">
-        <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th></tr></thead>
+        <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Manage</th></tr></thead>
         <tbody id="ordersTableBody"></tbody>
       </table>
     </div>
+    <dialog class="admin-details" id="orderDetailDialog"><div class="admin-details-content" id="orderDetailContent"></div></dialog>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

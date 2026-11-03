@@ -86,10 +86,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div style="background:#fff;border-radius:var(--radius);box-shadow:var(--shadow-card);padding:20px;margin-bottom:14px;">
           <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
             <div style="flex:1;min-width:220px;">
-              <strong>${r.name}</strong> · <span style="color:rgba(74,44,29,.5);font-size:.85rem;">${productName}</span>
+              <strong>${reviewEscape(r.name)}</strong> · <span style="color:rgba(74,44,29,.5);font-size:.85rem;">${reviewEscape(productName)}</span>
               <div class="stars" style="margin:6px 0;">${starsMarkup(r.rating)}</div>
-              <p style="font-size:.9rem;color:rgba(74,44,29,.8);">${r.comment || ""}</p>
-              ${r.photo_url ? `<img src="${r.photo_url}" class="review-photo" alt="Review photo" />` : ""}
+              <p style="font-size:.9rem;color:rgba(74,44,29,.8);">${reviewEscape(r.comment || "")}</p>
+              ${r.photo_url ? `<img src="${reviewEscape(r.photo_url)}" class="review-photo" alt="Review photo" />` : ""}
               <div style="font-size:.75rem;color:rgba(74,44,29,.4);margin-top:4px;">
                 ${r.source === "admin" ? "Added by admin" : "Customer submission"} · ${new Date(r.created_at).toLocaleDateString()}
               </div>

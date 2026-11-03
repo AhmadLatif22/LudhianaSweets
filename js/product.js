@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderProduct() {
     document.getElementById("productName").textContent = product.name;
     document.getElementById("productTagline").textContent = product.tagline;
-    document.getElementById("productRating").innerHTML =
-      `${stars(product.rating)} <span style="color:rgba(74,44,29,.5)">${product.rating} (${product.reviewCount} reviews)</span>`;
+    document.getElementById("productRating").textContent = product.reviewCount > 0
+      ? `${stars(product.rating)} ${product.rating} (${product.reviewCount} reviews)` : 'New arrival · No reviews yet';
     document.title = `${product.name} | Ludhiana Sweets`;
 
     // Gallery
@@ -141,9 +141,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             (r) => `
         <div class="review-item">
           <div class="stars">${starsMarkup(r.rating)}</div>
-          ${r.photo_url ? `<img src="${r.photo_url}" alt="Photo from ${r.name}'s review" class="review-photo" />` : ""}
-          <p style="font-size:.9rem;color:rgba(74,44,29,.75);">${r.comment || ""}</p>
-          <p class="review-name">${r.name}</p>
+          ${r.photo_url ? `<img src="${reviewEscape(r.photo_url)}" alt="Photo from ${reviewEscape(r.name)}'s review" class="review-photo" />` : ""}
+          <p style="font-size:.9rem;color:rgba(74,44,29,.75);">${reviewEscape(r.comment || "")}</p>
+          <p class="review-name">${reviewEscape(r.name)}</p>
         </div>`
           )
           .join("")

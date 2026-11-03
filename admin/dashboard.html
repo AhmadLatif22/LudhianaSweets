@@ -12,7 +12,7 @@
 <body>
 <div class="admin-layout">
   <aside class="admin-sidebar">
-    <a href="index.html" class="logo"><img src="images/logoo.png" alt="Ludhiana Sweets" class="logo-img" /></a>
+    <a href="../index.html" class="logo"><img src="../images/logoo.png" alt="Ludhiana Sweets" class="logo-img" /></a>
     <nav>
       <a href="dashboard.html" class="active">📊 Overview</a>
       <a href="orders.html">🛒 Orders</a>
@@ -27,10 +27,9 @@
 
     <h1 style="font-size:1.6rem;">Overview</h1>
     <p style="color:rgba(74,44,29,.6);font-size:.9rem;margin-top:6px;">
-      Figures below are calculated from orders placed on this browser (stored in localStorage) —
-      swap js/admin-data.js for real API calls once you have a backend.
+      Live operational figures sourced from Supabase. COD orders are not counted as collected revenue until marked paid.
     </p>
-    <div class="admin-stats" id="statsGrid"></div>
+    <div class="admin-stats" id="statsGrid"><p>Loading metrics…</p></div><section style="margin-top:30px;background:#fff;padding:22px;border-radius:14px"><h2 style="font-size:1.2rem">Recent orders</h2><div id="recentOrders">Loading…</div><a class="btn btn-outline" href="orders.html" style="margin-top:18px">Manage all orders</a></section>
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

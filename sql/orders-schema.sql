@@ -23,27 +23,10 @@ create table if not exists orders (
 
 alter table orders enable row level security;
 
--- Anyone can create an order (checkout is public / unauthenticated) and can
--- look up an order by its own order number (needed for order-success.html).
--- No sensitive payment data is stored here, so this is an acceptable trade-off
--- for a site with no customer login system.
-create policy "Public can insert orders"
-  on orders for insert
-  to anon
-  with check (true);
-
-create policy "Public can view orders"
-  on orders for select
-  to anon
-  using (true);
-
--- Only signed-in admins can change order status by hand (e.g. from
--- admin/orders.html). The webhook and edge functions use the service_role
--- key, which bypasses RLS entirely, so they don't need a policy here.
-create policy "Authenticated admins can update orders"
-  on orders for update
-  to authenticated
-  using (true);
+-- SECURITY: public orders are private. No policies grant anonymous read or write.
+-- Apply phase1-2-production.sql to create the protected server order RPC,
+ -- administrator allowlist and privacy-preserving tracking API.
+revoke all on orders from anon, authenticated;
 
 -- Realtime so admin/orders.html updates live when the webhook confirms an
 -- order, and order-success.html can show the confirmation the moment it lands.

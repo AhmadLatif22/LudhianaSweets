@@ -4,17 +4,21 @@
    ========================================================================== */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ---- Testimonials ----
+  // ---- Testimonials: only real, approved customer reviews ----
+  const safe=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const wrap = document.getElementById("testimonialWrap");
   if (wrap) {
+    if (!REVIEWS.length) {
+      wrap.innerHTML = `<div class="testimonial-card"><p>Verified customer feedback will appear here as reviews arrive.</p></div>`;
+    } else {
     let index = 0;
     function renderTestimonial() {
       const r = REVIEWS[index];
       wrap.innerHTML = `
         <div class="testimonial-card">
           <div class="testimonial-stars">${stars(r.rating)}</div>
-          <p>"${r.comment}"</p>
-          <p class="name">${r.name}</p>
+          <p>"${safe(r.comment)}"</p>
+          <p class="name">${safe(r.name)}</p>
         </div>
         <div class="testimonial-dots">
           ${REVIEWS.map((_, i) => `<button aria-label="Show testimonial ${i + 1}" class="${i === index ? "active" : ""}" data-i="${i}"></button>`).join("")}
@@ -31,13 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
       index = (index + 1) % REVIEWS.length;
       renderTestimonial();
     }, 5000);
+    }
   }
 
   // ---- FAQ accordion ----
   const FAQS = [
     { q: "How long does delivery take?", a: "Orders within Punjab typically arrive within 1-2 days. Other regions across Pakistan usually take 2-4 days depending on courier availability." },
     { q: "How do you keep the barfi fresh during delivery?", a: "Every order is packed in sealed, insulated boxes shortly after preparation to lock in freshness and prevent damage in transit." },
-    { q: "What payment methods do you accept?", a: "We accept Visa, MasterCard, JazzCash, EasyPaisa, and Cash on Delivery — choose whichever is most convenient at checkout." },
+    { q: "What payment methods do you accept?", a: "We currently accept Cash on Delivery. Online payment methods are awaiting PayFast approval and secure integration." },
     { q: "How should I store the barfi after it arrives?", a: "Keep it in an airtight container at room temperature for up to 4 days, or refrigerate for up to 10 days. Let it reach room temperature before serving." },
   ];
   const faqList = document.getElementById("faqList");
@@ -71,9 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast("Please enter a valid email address.", true);
       return;
     }
-    // TODO(you): POST to your email list provider (Mailchimp, EmailJS
-    // audiences, etc.) here.
-    showToast("You're subscribed! Watch for our next batch announcement.");
-    e.target.reset();
+    showToast("Newsletter registration is temporarily unavailable. Please contact the store for updates.", true);
   });
 });

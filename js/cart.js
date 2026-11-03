@@ -136,10 +136,6 @@ function renderCartDrawer() {
   if (footerEl) {
     footerEl.style.display = "block";
     footerEl.innerHTML = `
-      <div class="cart-coupon">
-        <input class="input" type="text" placeholder="Coupon code" />
-        <button class="btn btn-outline" type="button">Apply</button>
-      </div>
       <div class="summary-row"><span>Subtotal</span><span>${formatPKR(sub)}</span></div>
       <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? "Free" : formatPKR(shipping)}</span></div>
       <p style="font-size:.75rem;color:rgba(74,44,29,.5);margin:-4px 0 8px;">Free shipping when you pay online at checkout</p>
