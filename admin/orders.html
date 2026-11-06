@@ -3,46 +3,18 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Admin Orders | Ludhiana Sweets</title>
+<title>Orders · Ludhiana Sweets Admin</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../css/style.css" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/admin.css" />
 </head>
-<body>
-<div class="admin-layout">
-  <aside class="admin-sidebar">
-    <a href="../index.html" class="logo"><img src="../images/logoo.png" alt="Ludhiana Sweets" class="logo-img" /></a>
-    <nav>
-      <a href="dashboard.html">📊 Overview</a>
-      <a href="orders.html" class="active">🛒 Orders</a>
-      <a href="products.html">📦 Products</a>
-      <a href="reviews.html">⭐ Reviews</a>
-    </nav>
-    <div style="margin-top:40px;padding-top:20px;border-top:1px solid rgba(255,253,248,.1);">
-      <button class="btn btn-outline btn-block" id="logoutBtn" style="color:var(--cream);border-color:rgba(255,253,248,.3);">Sign Out</button>
-    </div>
-  </aside>
-  <div class="admin-main">
-
-    <h1 style="font-size:1.6rem;">Orders</h1>
-    <p style="color:#806d5b;margin-top:8px">Manage confirmations, preparation and deliveries. Order records are stored securely in Supabase.</p>
-    <div class="admin-toolbar"><input class="input" id="ordersSearch" placeholder="Search order, customer or phone" aria-label="Search orders" /><select class="input" id="ordersFilter" aria-label="Filter order status"><option value="">All statuses</option><option value="pending_whatsapp_confirmation">Awaiting WhatsApp</option><option value="confirmed">Confirmed</option><option value="processing">Processing</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select><button class="btn btn-outline" id="refreshOrders">Refresh</button></div>
-    <p id="ordersInfo" aria-live="polite" style="font-size:.83rem;color:#806d5b;margin-bottom:15px">Loading orders…</p>
-    <div style="overflow-x:auto;">
-      <table class="admin-table" id="ordersTable">
-        <thead><tr><th>Order #</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Manage</th></tr></thead>
-        <tbody id="ordersTableBody"></tbody>
-      </table>
-    </div>
-    <dialog class="admin-details" id="orderDetailDialog"><div class="admin-details-content" id="orderDetailContent"></div></dialog>
-  </div>
-</div>
+<body class="admin-body">
+<div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
-<script src="../js/admin-auth.js"></script>
-<script src="../js/cart.js"></script>
-<script src="../js/admin-data.js"></script>
+<script src="../js/admin-core.js"></script>
 <script src="../js/admin-orders.js"></script>
 </body>
 </html>

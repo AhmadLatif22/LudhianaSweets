@@ -3,35 +3,40 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Admin Sign In | Ludhiana Sweets</title>
+<title>Sign in · Ludhiana Sweets Admin</title>
 <meta name="robots" content="noindex, nofollow" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="../css/style.css" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../css/admin.css" />
 </head>
-<body>
-
-  <div class="login-box">
-    <h1 style="font-size:1.5rem;margin-bottom:8px;">Admin Sign In</h1>
-    <p style="color:rgba(74,44,29,.6);font-size:.85rem;margin-bottom:24px;" id="loginSubtitle">
-      Demo login only — see js/admin-auth.js to wire up something real.
-    </p>
-    <form id="loginForm">
-      <div class="field" style="text-align:left;">
-        <label for="username">Username</label>
-        <input class="input" id="username" required />
-      </div>
-      <div class="field" style="text-align:left;">
-        <label for="password">Password</label>
-        <input class="input" type="password" id="password" required />
-      </div>
-      <p class="error" id="loginError" style="margin-bottom:12px;"></p>
-      <button type="submit" class="btn btn-primary btn-block">Sign In</button>
-    </form>
-    <p style="font-size:.78rem;color:rgba(74,44,29,.4);margin-top:16px;" id="demoCredentialsHint">Demo credentials: admin / ludhiana123</p>
-  </div>
+<body class="login-body">
+<div class="login">
+  <section class="login-art">
+    <img src="../images/logoo.png" alt="Ludhiana Sweets" />
+    <div>
+      <h2>Run the shop from one place.</h2>
+      <p>Orders, stock, products and customer reviews for Ludhiana Sweets, Sargodha.</p>
+      <ul id="perks"></ul>
+    </div>
+    <small>Authorised staff only. Activity on this dashboard is protected by your store’s access list.</small>
+  </section>
+  <section class="login-form">
+    <div class="login-card">
+      <h1>Sign in</h1>
+      <p>Use your store administrator account.</p>
+      <div class="form-err" id="loginError" role="alert" hidden></div>
+      <form id="loginForm" novalidate>
+        <div class="field"><label for="email">Email</label><input class="input" id="email" type="email" autocomplete="username" required /></div>
+        <div class="field"><label for="password">Password</label><div class="pw"><input class="input" id="password" type="password" autocomplete="current-password" required /><button type="button" id="pwToggle" aria-label="Show password"></button></div></div>
+        <button class="btn primary" type="submit" id="loginBtn">Sign in</button>
+      </form>
+    </div>
+  </section>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="../js/supabase-client.js"></script>
-<script src="../js/admin-auth.js"></script>
+<script src="../js/admin-core.js"></script>
+<script src="../js/admin-login.js"></script>
 </body>
 </html>

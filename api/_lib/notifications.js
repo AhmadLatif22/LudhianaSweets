@@ -34,15 +34,119 @@ export function normalizePhone(raw) {
   if (/^923\d{9}$/.test(digits)) return digits;
   return null;
 }
+
 export async function sendWhatsApp(order) {
-  if (!process.env.WHATSAPP_ACCESS_TOKEN || !process.env.WHATSAPP_PHONE_NUMBER_ID || !process.env.WHATSAPP_TEMPLATE_NAME) return {ok:false,reason:'WhatsApp not configured'};
+  if (
+    !process.env.WHATSAPP_ACCESS_TOKEN ||
+    !process.env.WHATSAPP_PHONE_NUMBER_ID ||
+    !process.env.WHATSAPP_TEMPLATE_NAME
+  ) {
+    return { ok: false, reason: 'WhatsApp not configured' };
+  }
+
   const phone = normalizePhone(order.customer.phone);
-  if (!phone) return {ok:false,reason:'Invalid Pakistani mobile number'};
-  // Meta's approved template must have three body variables and Confirm / Cancel quick replies.
-  const r = await fetch(`https://graph.facebook.com/${process.env.META_API_VERSION || 'v23.0'}/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`,{
-    method:'POST',signal:AbortSignal.timeout(4000),headers:{Authorization:`Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,'Content-Type':'application/json'},
-    body:JSON.stringify({messaging_product:'whatsapp',to:phone,type:'template',template:{name:process.env.WHATSAPP_TEMPLATE_NAME,language:{code:process.env.WHATSAPP_TEMPLATE_LANG || 'en'},components:[{type:'body',parameters:[{type:'text',text:order.customer.fullName},{type:'text',text:order.order_number},{type:'text',text:`Rs ${order.total.toLocaleString('en-PK')}` }]}]}})
+
+  if (!phone) {
+    return { ok: false, reason: 'Invalid Pakistani mobile number' };
+  }
+
+  const url = `https://graph.facebook.com/${
+    process.env.META_API_VERSION || 'v23.0'
+  }/${process.env.WHATSAPP_PHONE_NUMBER_ID}/messages`;
+
+  const payload = {
+    messaging_product: 'whatsapp',
+    to: phone,
+    type: 'template',
+    template: {
+      name: process.env.WHATSAPP_TEMPLATE_NAME,
+      language: {
+        code: process.env.WHATSAPP_TEMPLATE_LANG || 'en'
+      },
+      components: [
+  {
+    type: 'body',
+    parameters: [
+      {
+        type: 'text',
+        text: order.customer.fullName
+      },
+      {
+        type: 'text',
+        text: order.order_number
+      },
+      {
+        type: 'text',
+        text: `Rs ${order.total.toLocaleString('en-PK')}`
+      }
+    ]
+  },
+  {
+    type: 'button',
+    sub_type: 'quick_reply',
+    index: '0',
+    parameters: [
+      {
+        type: 'payload',
+        payload: 'CONFIRM_ORDER'
+      }
+    ]
+  },
+  {
+    type: 'button',
+    sub_type: 'quick_reply',
+    index: '1',
+    parameters: [
+      {
+        type: 'payload',
+        payload: 'CANCEL_ORDER'
+      }
+    ]
+  }
+]
+    }
+  };
+
+  const r = await fetch(url, {
+    method: 'POST',
+    signal: AbortSignal.timeout(4000),
+    headers: {
+      Authorization: `Bearer ${process.env.WHATSAPP_ACCESS_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
   });
-  const body = await r.json().catch(()=>({}));
-  return {ok:r.ok && !!body.messages?.[0]?.id,messageId:body.messages?.[0]?.id || null};
+
+  const body = await r.json().catch(() => ({}));
+  const messageId = body.messages?.[0]?.id || null;
+
+  if (!r.ok || !messageId) {
+    const metaError = body.error || {};
+
+    const details = {
+      httpStatus: r.status,
+      errorType: metaError.type || null,
+      errorCode: metaError.code ?? null,
+      errorSubcode: metaError.error_subcode ?? null,
+      message: String(metaError.message || 'No message ID returned').slice(0, 400),
+      fbtraceId: metaError.fbtrace_id || null
+    };
+
+    console.error('WhatsApp Meta API rejection:', details);
+
+    return {
+      ok: false,
+      reason: `HTTP ${r.status} | Code: ${details.errorCode} | ${details.message}`
+    };
+  }
+
+  console.log('WhatsApp message accepted by Meta:', {
+    messageId
+  });
+
+  return {
+    ok: true,
+    messageId
+  };
 }
+
