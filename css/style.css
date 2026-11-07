@@ -1783,3 +1783,107 @@ input.input, textarea.input, select.input {
 /* Checkout: unavailable payment options + inline error */
 .payment-unavailable, .checkout-payment-option:disabled, .shipping-option:disabled { opacity: .5; cursor: not-allowed; }
 .checkout-error { margin: 0 0 14px; padding: 12px 14px; border-radius: 10px; background: #fdecea; color: #c0392b; font-size: .9rem; line-height: 1.4; }
+
+
+/* ==========================================================================
+   Mobile & tablet polish (keep at the end of the file so it wins over the
+   earlier rules). Phones <= 560px, tablets 561px - 1024px.
+   ========================================================================== */
+
+/* Divider line was only drawn for its first 1000 units, so it stopped short on wide screens */
+.ribbon-divider path { stroke-dasharray: 4000; stroke-dashoffset: 4000; }
+.ribbon-divider.in-view path { stroke-dashoffset: 0; }
+.footer-grid { padding-left: 20px; padding-right: 20px; }
+
+/* ---- Tablets ---- */
+@media (min-width: 561px) and (max-width: 1024px) {
+  .container, .footer-grid { padding-left: 32px; padding-right: 32px; }
+  .section { padding: 72px 0; }
+  .section-heading { margin-bottom: 44px; }
+  .site-header .container { padding-left: 28px; padding-right: 28px; }
+}
+@media (min-width: 721px) and (max-width: 860px) {
+  /* keep the two-column hero on tablets instead of a very tall single column */
+  .hero { min-height: auto; padding: 64px 0 72px; }
+  .hero .container { grid-template-columns: 1.1fr 0.9fr; gap: 32px; text-align: left; }
+  .hero p { margin-left: 0; margin-right: 0; font-size: 1.02rem; }
+  .hero-cta { justify-content: flex-start; }
+  .hero-image { max-width: 340px; }
+}
+@media (min-width: 561px) and (max-width: 860px) {
+  .hero { padding-top: 56px; padding-bottom: 64px; min-height: auto; }
+  .about-image { aspect-ratio: 16 / 9; }
+  .about-grid { gap: 32px; }
+  .footer-grid { gap: 32px; }
+  .footer-grid > :first-child { grid-column: 1 / -1; }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 560px) {
+  /* The old rule here removed side padding from every .container on the site.
+     Put it back, and let only the shop product grid run edge to edge. */
+  .container, .shop-container { padding-left: 20px; padding-right: 20px; }
+  .product-grid { margin-left: -20px; margin-right: -20px; width: auto; }
+
+  .section { padding: 52px 0; }
+  .section-heading { margin-bottom: 32px; }
+  .section-heading h2 { font-size: 1.65rem; }
+
+  /* Header */
+  .site-header .container { padding-left: 16px; padding-right: 12px; }
+  .logo { width: 104px; height: 48px; }
+  .header-actions { gap: 2px; }
+  .icon-btn, .menu-toggle { min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+  .mobile-nav { margin: 8px 16px 0; }
+  .mobile-nav a { padding: 14px 12px; font-size: 1.02rem; }
+
+  /* Hero */
+  .hero { min-height: auto; padding: 36px 0 52px; }
+  .hero .container { gap: 32px; padding-top: 0; }
+  .hero-badge { font-size: 0.68rem; padding: 6px 14px; margin-bottom: 18px; }
+  .hero h1 { font-size: clamp(2rem, 9vw, 2.4rem); }
+  .hero p { font-size: 1rem; margin-top: 16px; }
+  .hero-cta { margin-top: 26px; gap: 12px; }
+  .hero-cta .btn { flex: 1 1 140px; min-width: 0; padding: 14px 16px; }
+  .hero-image { max-width: 100%; aspect-ratio: 4 / 4.2; animation: none; }
+
+  /* Why choose us: compact horizontal cards instead of four tall ones */
+  .features-grid { gap: 12px; }
+  .feature-card { display: grid; grid-template-columns: 48px 1fr; column-gap: 16px; align-items: start; padding: 18px; }
+  .feature-card:hover { transform: none; }
+  .feature-icon { width: 48px; height: 48px; margin: 0; grid-row: 1 / span 2; }
+  .feature-card h3 { margin: 2px 0 4px; font-size: 1.02rem; }
+
+  /* Our story */
+  .about-grid { gap: 26px; }
+  .about-image { aspect-ratio: 4 / 3; }
+  .about-text h2 { font-size: 1.65rem; }
+
+  /* FAQ */
+  .faq-answer p { padding: 0 16px 18px; }
+  .faq-item.open .faq-answer { max-height: 600px; }
+
+  /* Newsletter */
+  .newsletter-form { flex-direction: column; align-items: stretch; gap: 12px; }
+  .newsletter-form input { max-width: none; width: 100%; font-size: 16px; }
+  .newsletter-form .btn { width: 100%; background: var(--dark); color: var(--cream); padding: 14px 20px; }
+
+  /* Footer: brand full width, the two link lists side by side, contact full width */
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px 20px; padding-top: 48px; padding-bottom: 28px; margin-left: 0; }
+  .footer-grid > :first-child, .footer-grid > :last-child { grid-column: 1 / -1; }
+  .footer-social a { width: 44px; height: 44px; }
+  .footer-bottom { padding: 18px 20px; }
+}
+
+/* Anywhere a form field is focused on a phone, keep text >= 16px so iOS Safari doesn't zoom the page */
+@media (max-width: 560px) { input, select, textarea { font-size: 16px; } }
+.faq-question { color: var(--dark); }
+@media (max-width: 560px) {
+  .hero::before { width: 260px; height: 260px; top: -100px; right: -120px; }
+  .hero::after { width: 240px; height: 240px; bottom: -100px; left: -120px; }
+  .testimonial-card { min-height: 0; padding: 28px 22px; }
+}
+
+/* The closed cart drawer's shadow was leaking onto the right edge of every page */
+.cart-drawer { box-shadow: none; visibility: hidden; transition: transform 0.35s ease, visibility 0s linear 0.35s; }
+.cart-drawer.open { box-shadow: -10px 0 40px rgba(0,0,0,0.2); visibility: visible; transition: transform 0.35s ease; }
