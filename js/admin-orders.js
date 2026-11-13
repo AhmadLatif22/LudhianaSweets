@@ -1,5 +1,6 @@
 /* Orders: tabs, search, filters, bulk actions, CSV export, order drawer with
    fulfilment actions, tracking, payment collection, timeline and invoice. */
+const SHIPPER = { name: "Ludhiana Sweets", address: "548D Block Satellite Town, Sargodha", phone: "+923296365372" };
 A.start({ page: "orders", title: "Orders" }, async (main) => {
   const { esc, pkr, num, icon, date, dateTime, ago } = A;
   const PER = 25;
@@ -7,7 +8,7 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
     ["all", "All", () => true],
     ["awaiting", "Awaiting confirmation", (o) => ["pending", "pending_whatsapp_confirmation"].includes(o.status)],
     ["toship", "To pack & ship", (o) => ["confirmed", "processing"].includes(o.status)],
-    ["road", "Out for delivery", (o) => o.status === "out_for_delivery"],
+    ["road", "Shipped", (o) => o.status === "out_for_delivery"],
     ["delivered", "Delivered", (o) => o.status === "delivered"],
     ["cancelled", "Cancelled", (o) => o.status === "cancelled"]
   ];
@@ -15,7 +16,7 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
   const S = { tab: TABS.some((t) => t[0] === qs.get("status")) ? qs.get("status") : "all", q: qs.get("q") || "", pay: ["paid", "unpaid"].includes(qs.get("pay")) ? qs.get("pay") : "", when: "", sort: "new", page: 1, sel: new Set() };
   let drawerCtl = null, lastLoad = Date.now();
 
-  main.innerHTML = `<div class="page-head"><div><h1>Orders</h1><p>Confirm, pack and dispatch orders, and record cash collected.</p></div>
+  main.innerHTML = `<div class="page-head"><div><h1>Orders</h1><p>Confirm and pack orders, add courier tracking to ship them, and record cash collected.</p></div>
     <div class="head-actions"><button class="btn" id="exportCsv">${icon("download")}Export CSV</button><button class="btn" id="refresh">${icon("refresh")}Refresh</button></div></div>
     <div id="notice"></div><div class="tabs" id="tabs" role="tablist"></div>
     <div class="toolbar"><div class="search">${icon("search")}<input class="input" id="q" placeholder="Search order no., customer, phone, city" aria-label="Search orders" value="${esc(S.q)}" /></div>
@@ -100,19 +101,23 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
   function paint(o) {
     const d = drawerCtl, c = o.customer, next = A.NEXT[o.status] || [];
     d.setTitle(o.orderNumber, `${A.statusBadge(o.status)} ${A.payBadge(o)} <span class="muted">· placed ${esc(dateTime(o.createdAt))}</span>`);
-    const dispatching = o.status === "processing";
+    const canShip = ["confirmed", "processing", "out_for_delivery"].includes(o.status), isShipped = o.status === "out_for_delivery";
     const primary = { confirmed: ["Confirm order", "confirmed"], processing: ["Start processing", "processing"], delivered: ["Mark delivered", "delivered"] };
     const mainAction = next.find((s) => primary[s]);
     const codDue = o.status === "delivered" && o.paymentMethod === "cod" && o.paymentStatus !== "paid";
     const phone = esc(c.phone || ""), wa = c.phone ? A.waLink(c.phone) : "";
     d.body.innerHTML = `
+      ${canShip ? `<div class="sec"><h3>Shipping details</h3>
+        <p class="muted" style="font-size:.82rem;margin:0 0 10px">${isShipped ? "Shipped. Correct the courier or tracking number below if needed." : "Add the courier and tracking number to mark this order as shipped. The customer is emailed automatically."}</p>
+        <div class="row2"><div class="field"><label for="dCourier">Courier company</label><input class="input" id="dCourier" list="couriers" placeholder="e.g. TCS, PostEx, Leopards" value="${esc(o.courier || "")}" /><datalist id="couriers">${["TCS", "Leopards", "M&P", "Trax", "PostEx", "BlueEx", "Call Courier", "Pakistan Post", "Own rider"].map((x) => `<option value="${esc(x)}">`).join("")}</datalist></div>
+          <div class="field"><label for="dTrack">Tracking number</label><input class="input" id="dTrack" placeholder="Tracking / consignment number" value="${esc(o.trackingNumber || "")}" /></div></div>
+        <div class="field"><label for="dUrl">Tracking link <span class="muted">(optional, https://)</span></label><input class="input" id="dUrl" placeholder="https://…" value="${esc(o.trackingUrl || "")}" /></div>
+        ${isShipped ? `<label class="muted" style="display:flex;gap:8px;align-items:center;font-size:.84rem;margin:2px 0 8px"><input type="checkbox" class="cb" id="dNotify" checked /> Email the customer the updated tracking details</label>` : ""}
+        <div class="err" id="dErr" role="alert" hidden></div>
+        <div class="steps"><button class="btn gold" data-go="out_for_delivery">${icon("truck")}${isShipped ? "Save shipping details" : "Mark as shipped &amp; email customer"}</button></div></div>` : ""}
       ${next.length || codDue ? `<div class="sec"><h3>Next step</h3>
-        ${dispatching ? `<div class="row2"><div class="field"><label for="dCourier">Courier</label><input class="input" id="dCourier" list="couriers" placeholder="e.g. TCS or own rider" value="${esc(o.courier || "")}" /><datalist id="couriers">${["TCS", "Leopards", "M&P", "Trax", "PostEx", "Pakistan Post", "Own rider"].map((x) => `<option value="${esc(x)}">`).join("")}</datalist></div>
-          <div class="field"><label for="dTrack">Tracking number</label><input class="input" id="dTrack" placeholder="Tracking / reference" value="${esc(o.trackingNumber || "")}" /></div></div>
-          <div class="field"><label for="dUrl">Tracking link <span class="muted">(optional, https://)</span></label><input class="input" id="dUrl" placeholder="https://…" value="${esc(o.trackingUrl || "")}" /></div><div class="err" id="dErr" role="alert" hidden></div>` : ""}
         <div class="steps">
           ${mainAction ? `<button class="btn primary" data-go="${mainAction}">${esc(primary[mainAction][0])}</button>` : ""}
-          ${dispatching ? `<button class="btn gold" data-go="out_for_delivery">${icon("truck")}Dispatch order</button>` : ""}
           ${codDue ? `<button class="btn gold" id="collect">${icon("cash")}Mark ${pkr(o.total)} collected</button>` : ""}
           ${next.includes("cancelled") ? `<button class="btn danger" data-go="cancelled">Cancel order</button>` : ""}
         </div>${o.status === "pending_whatsapp_confirmation" ? `<p class="muted mt" style="font-size:.8rem">The customer is asked to confirm on WhatsApp. You can also confirm manually after speaking with them.</p>` : ""}</div>` : ""}
@@ -124,7 +129,7 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
       <div class="sec"><h3>Items</h3><div class="items">${o.items.map((i) => `<div class="it">${i.image ? `<img class="thumb" src="${esc(A.imgSrc(i.image))}" alt="" />` : `<div class="thumb empty">${icon("image")}</div>`}<div class="grow"><div class="strong">${esc(i.name)}</div><div class="sub muted">${esc(i.weight)} × ${num(i.quantity)} @ ${pkr(i.unitPrice)}</div></div><b>${pkr(Number(i.unitPrice) * Number(i.quantity))}</b></div>`).join("")}</div>
         <div class="sum"><div><span>Subtotal</span><span>${pkr(o.subtotal)}</span></div><div><span>Shipping</span><span>${o.shipping ? pkr(o.shipping) : "Free"}</span></div><div class="tot"><span>Total</span><span>${pkr(o.total)}</span></div></div></div>
       <div class="sec"><h3>Payment</h3><dl class="kv"><dt>Method</dt><dd>${esc(A.payMethod(o.paymentMethod))}</dd><dt>Status</dt><dd>${A.payBadge(o)}</dd></dl></div>
-      ${o.courier || o.trackingNumber ? `<div class="sec"><h3>Delivery</h3><dl class="kv"><dt>Courier</dt><dd>${esc(o.courier || "—")}</dd><dt>Tracking</dt><dd>${esc(o.trackingNumber || "—")}</dd>${o.trackingUrl ? `<dt>Link</dt><dd><a class="link" href="${esc(o.trackingUrl)}" target="_blank" rel="noopener">Track shipment</a></dd>` : ""}</dl></div>` : ""}
+      ${!canShip && (o.courier || o.trackingNumber) ? `<div class="sec"><h3>Delivery</h3><dl class="kv"><dt>Courier</dt><dd>${esc(o.courier || "—")}</dd><dt>Tracking</dt><dd>${esc(o.trackingNumber || "—")}</dd>${o.trackingUrl ? `<dt>Link</dt><dd><a class="link" href="${esc(o.trackingUrl)}" target="_blank" rel="noopener">Track shipment</a></dd>` : ""}</dl></div>` : ""}
       <div class="sec"><h3>Timeline</h3><ul class="timeline" id="tl"><li><b>Loading…</b></li></ul></div>`;
     d.footer.innerHTML = `<button class="btn left" id="print">${icon("print")}Print invoice</button><button class="btn" data-x2>Close</button>`;
     A.$("[data-x2]", d.footer).onclick = () => d.close(); A.$("#print", d.footer).onclick = () => printInvoice(o);
@@ -141,12 +146,13 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
     if (to === "cancelled" && !(await A.confirmBox({ title: `Cancel ${o.orderNumber}?`, message: "Reserved stock goes back to inventory and the customer is notified. This can’t be undone.", confirm: "Cancel order", danger: true }))) return;
     if (to === "out_for_delivery") {
       const f = (id) => A.$(id, drawerCtl.body)?.value.trim() || "";
-      extra.courier = f("#dCourier") || o.courier || ""; extra.trackingNumber = f("#dTrack") || o.trackingNumber || ""; extra.trackingUrl = f("#dUrl") || o.trackingUrl || "";
-      const bad = !extra.courier || !extra.trackingNumber ? "Enter the courier and a tracking number before dispatching." : extra.trackingUrl && !/^https:\/\//.test(extra.trackingUrl) ? "The tracking link must start with https://" : "";
+      extra.courier = f("#dCourier"); extra.trackingNumber = f("#dTrack"); extra.trackingUrl = f("#dUrl");
+      if (o.status === "out_for_delivery") extra.notify = !!A.$("#dNotify", drawerCtl.body)?.checked;
+      const bad = !extra.courier || !extra.trackingNumber ? "Enter the courier company and tracking number to ship this order." : extra.trackingUrl && !/^https:\/\//.test(extra.trackingUrl) ? "The tracking link must start with https://" : "";
       if (bad) { if (err) { err.textContent = bad; err.hidden = false; } else A.toast(bad, "error"); return; }
     }
     btn.disabled = true;
-    try { await A.orders.transition(o.orderNumber, to, extra); await refreshAfter(o.orderNumber, `Order ${A.statusLabel(to).toLowerCase()}`); }
+    try { await A.orders.transition(o.orderNumber, to, extra); await refreshAfter(o.orderNumber, to === "out_for_delivery" ? (o.status === "out_for_delivery" ? "Shipping details saved" : "Order shipped. Customer emailed.") : `Order ${A.statusLabel(to).toLowerCase()}`); }
     catch (e) { btn.disabled = false; A.toast(e.message, "error"); }
   }
   async function collect(o, btn) {
@@ -159,15 +165,18 @@ A.start({ page: "orders", title: "Orders" }, async (main) => {
   function printInvoice(o) {
     const c = o.customer, w = window.open("", "_blank");
     if (!w) return A.toast("Allow pop-ups to print the invoice.", "error");
+    const shipment = o.courier || o.trackingNumber ? `<p><b>Shipment</b><br>Courier: ${esc(o.courier || "—")}<br>Tracking number: ${esc(o.trackingNumber || "—")}</p>` : "";
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${esc(o.orderNumber)}</title><style>
       body{font:14px/1.5 "Segoe UI",system-ui,sans-serif;color:#222;max-width:720px;margin:32px auto;padding:0 20px}h1{font-size:22px;margin:0}table{width:100%;border-collapse:collapse;margin:18px 0}
       th,td{padding:8px 6px;border-bottom:1px solid #ddd;text-align:left}th:last-child,td:last-child,th:nth-child(3),td:nth-child(3){text-align:right}.top{display:flex;justify-content:space-between;gap:20px;border-bottom:2px solid #222;padding-bottom:14px}
+      .cols{display:flex;gap:32px;flex-wrap:wrap}.cols>p{flex:1;min-width:200px;margin:14px 0 0}
       .tot td{border:0;padding:3px 6px}.muted{color:#666}@media print{button{display:none}}</style></head><body>
-      <div class="top"><div><h1>Ludhiana Sweets</h1><div class="muted">Sargodha, Pakistan</div></div><div style="text-align:right"><b>Invoice</b><br>${esc(o.orderNumber)}<br><span class="muted">${esc(dateTime(o.createdAt))}</span></div></div>
-      <p><b>Deliver to</b><br>${esc(c.fullName)}<br>${esc(c.phone)}<br>${esc(c.address)}<br>${esc([c.city, c.postalCode].filter(Boolean).join(" "))}</p>
+      <div class="top"><div><h1>${esc(SHIPPER.name)}</h1><div class="muted">${esc(SHIPPER.address)}<br>${esc(SHIPPER.phone)}</div></div><div style="text-align:right"><b>Invoice</b><br>${esc(o.orderNumber)}<br><span class="muted">${esc(dateTime(o.createdAt))}</span></div></div>
+      <div class="cols"><p><b>Shipped from</b><br>${esc(SHIPPER.name)}<br>${esc(SHIPPER.address)}<br>${esc(SHIPPER.phone)}</p>
+      <p><b>Deliver to</b><br>${esc(c.fullName)}<br>${esc(c.phone)}<br>${esc(c.address)}<br>${esc([c.city, c.postalCode].filter(Boolean).join(" "))}</p>${shipment}</div>
       <table><thead><tr><th>Item</th><th>Qty</th><th>Amount</th></tr></thead><tbody>${o.items.map((i) => `<tr><td>${esc(i.name)} <span class="muted">${esc(i.weight)}</span></td><td>${num(i.quantity)}</td><td>${pkr(Number(i.unitPrice) * Number(i.quantity))}</td></tr>`).join("")}</tbody></table>
       <table class="tot" style="width:240px;margin-left:auto"><tr><td>Subtotal</td><td>${pkr(o.subtotal)}</td></tr><tr><td>Shipping</td><td>${o.shipping ? pkr(o.shipping) : "Free"}</td></tr><tr><td><b>Total</b></td><td><b>${pkr(o.total)}</b></td></tr></table>
-      <p class="muted">Payment: ${esc(A.payMethod(o.paymentMethod))} — ${o.paymentStatus === "paid" ? "Paid" : "Due on delivery"}</p><p class="muted">Thank you for shopping with Ludhiana Sweets.</p>
+      <p class="muted">Payment: ${esc(A.payMethod(o.paymentMethod))} — ${o.paymentStatus === "paid" ? "Paid" : "Due on delivery"}</p><p class="muted">Thank you for shopping with ${esc(SHIPPER.name)}.</p>
       <button onclick="print()">Print</button><script>onload=()=>setTimeout(print,300)<\/script></body></html>`);
     w.document.close();
   }

@@ -3,14 +3,15 @@ document.addEventListener('DOMContentLoaded',()=>{
   const number=document.getElementById('trackNumber'),token=document.getElementById('trackToken');
   const p=new URLSearchParams(location.hash.replace(/^#/,''));number.value=p.get('order')||'';token.value=p.get('token')||'';
   const escape=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const label=st=>st==='out_for_delivery'?'shipped':String(st).replace(/_/g,' ');
   const money=n=>`Rs ${Number(n).toLocaleString('en-PK')}`;
   async function load(e){e?.preventDefault();result.style.display='block';result.textContent='Checking order…';
     try{
       const r=await fetch('/api/track-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderNumber:number.value.trim(),token:token.value.trim()})});
       const o=await r.json();if(!r.ok)throw Error(o.error||'Order not found');
       const statuses=['pending_whatsapp_confirmation','confirmed','processing','out_for_delivery','delivered'];
-      result.innerHTML=`<h2>Order ${escape(o.order_number)}</h2><p><strong>${escape(o.status.replace(/_/g,' '))}</strong></p>
-       ${o.status==='cancelled'?'<p>This order has been cancelled.</p>':`<ol class="tracking-timeline">${statuses.map((s,i)=>`<li class="${statuses.indexOf(o.status)>=i?'done':''}">${escape(s.replace(/_/g,' '))}</li>`).join('')}</ol>`}
+      result.innerHTML=`<h2>Order ${escape(o.order_number)}</h2><p><strong>${escape(label(o.status))}</strong></p>
+       ${o.status==='cancelled'?'<p>This order has been cancelled.</p>':`<ol class="tracking-timeline">${statuses.map((s,i)=>`<li class="${statuses.indexOf(o.status)>=i?'done':''}">${escape(label(s))}</li>`).join('')}</ol>`}
        <div class="tracking-value"><span>Placed on</span><strong>${new Date(o.created_at).toLocaleDateString('en-PK')}</strong></div>
        <div class="tracking-value"><span>Delivery city</span><strong>${escape(o.delivery_city)}</strong></div>
        <div class="tracking-value"><span>Payment</span><strong>COD · ${escape(o.payment_status)}</strong></div>

@@ -7,17 +7,9 @@ export function orderTrackLink(order) {
   const hash = new URLSearchParams({order: order.order_number, token: order.checkout_token});
   return `${origin.replace(/\/$/,'')}/track-order.html#${hash}`;
 }
-export async function sendOrderEmail(order, subject, lead) {
+async function sendHtml(order, subject, html) {
   const key = process.env.RESEND_API_KEY, from = process.env.RESEND_FROM_EMAIL;
   if (!key || !from) return {ok:false, reason:'Email not configured'};
-  const list = (order.items || []).map(item => `<li>${escapeHtml(item.name)} (${escapeHtml(item.weight)}) × ${Number(item.quantity)}</li>`).join('');
-  const link = orderTrackLink(order);
-  const html = `<div style="font-family:Arial,sans-serif;color:#4a2c1d;max-width:600px;margin:auto">
-  <h1>Ludhiana Sweets</h1><p>Hi ${escapeHtml(order.customer.fullName)},</p><p>${escapeHtml(lead)}</p>
-  <p><b>Order ${escapeHtml(order.order_number)}</b></p><ul>${list}</ul>
-  <p>Total: Rs ${Number(order.total).toLocaleString('en-PK')}</p>
-  ${link ? `<p><a href="${escapeHtml(link)}">Track your order securely</a></p>` : ''}
-  <p>Delivery: ${escapeHtml(order.customer.address)}, ${escapeHtml(order.customer.city)}</p></div>`;
   const sends = [order.customer.email, process.env.ADMIN_EMAIL].filter(Boolean);
   let ok = true;
   for (const address of new Set(sends)) {
@@ -27,6 +19,49 @@ export async function sendOrderEmail(order, subject, lead) {
     } catch (e) {console.error('Resend unavailable',e.message);ok=false;}
   }
   return {ok};
+}
+export async function sendOrderEmail(order, subject, lead) {
+  const list = (order.items || []).map(item => `<li>${escapeHtml(item.name)} (${escapeHtml(item.weight)}) × ${Number(item.quantity)}</li>`).join('');
+  const link = orderTrackLink(order);
+  const html = `<div style="font-family:Arial,sans-serif;color:#4a2c1d;max-width:600px;margin:auto">
+  <h1>Ludhiana Sweets</h1><p>Hi ${escapeHtml(order.customer.fullName)},</p><p>${escapeHtml(lead)}</p>
+  <p><b>Order ${escapeHtml(order.order_number)}</b></p><ul>${list}</ul>
+  <p>Total: Rs ${Number(order.total).toLocaleString('en-PK')}</p>
+  ${link ? `<p><a href="${escapeHtml(link)}">Track your order securely</a></p>` : ''}
+  <p>Delivery: ${escapeHtml(order.customer.address)}, ${escapeHtml(order.customer.city)}</p></div>`;
+  return sendHtml(order, subject, html);
+}
+const STORE = {name:'Ludhiana Sweets', address:'548D Block Satellite Town, Sargodha', phone:'+923296365372'};
+function itemImage(image) {
+  const origin = (process.env.SITE_URL || '').replace(/\/$/,'');
+  if (!image) return '';
+  if (/^https:\/\//.test(image)) return image;
+  return origin ? `${origin}/${String(image).replace(/^\//,'')}` : '';
+}
+/* "Your order is on the way" email: order number, courier, tracking number and the items shipped. */
+export async function sendShippedEmail(order) {
+  const e = escapeHtml, trackPage = orderTrackLink(order);
+  const courierUrl = /^https:\/\//.test(order.tracking_url || '') ? order.tracking_url : '';
+  const items = (order.items || []).map(item => {
+    const img = itemImage(item.image);
+    return `<tr><td style="padding:10px 0;border-bottom:1px solid #eee5dc;width:64px">${img ? `<img src="${e(img)}" width="52" height="52" alt="" style="border-radius:6px;object-fit:cover;display:block">` : ''}</td>
+      <td style="padding:10px 0 10px 12px;border-bottom:1px solid #eee5dc;font-size:14px"><b>${e(item.name)} × ${Number(item.quantity)}</b><br><span style="color:#7a6558">${e(item.weight)}</span></td></tr>`;
+  }).join('');
+  const btn = (href, label, solid) => `<a href="${e(href)}" style="display:inline-block;padding:12px 22px;border-radius:6px;font-size:14px;font-weight:600;text-decoration:none;${solid ? 'background:#7a1f2b;color:#fff' : 'border:1px solid #7a1f2b;color:#7a1f2b'};margin:0 8px 8px 0">${label}</a>`;
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#3b2a20;max-width:560px;margin:auto;padding:24px">
+    <table width="100%" style="border-collapse:collapse"><tr><td style="font-size:22px;font-weight:700">${STORE.name}</td><td align="right" style="font-size:12px;color:#7a6558;letter-spacing:.04em">ORDER ${e(order.order_number)}</td></tr></table>
+    <h2 style="margin:28px 0 6px;font-size:20px">Your order is on the way</h2>
+    <p style="margin:0 0 18px;color:#5c4637;font-size:14px;line-height:1.5">Hi ${e(order.customer.fullName)}, your order <b>${e(order.order_number)}</b> has been shipped. Track your shipment to see the delivery status.</p>
+    <div>${trackPage ? btn(trackPage, 'View your order', true) : ''}${courierUrl ? btn(courierUrl, 'Track parcel', false) : ''}</div>
+    <p style="margin:12px 0 4px;font-size:14px"><span style="color:#7a6558">Courier:</span> <b>${e(order.courier || '')}</b></p>
+    <p style="margin:0 0 24px;font-size:14px"><span style="color:#7a6558">${e(order.courier || 'Courier')} tracking number:</span> ${courierUrl ? `<a href="${e(courierUrl)}" style="color:#7a1f2b"><b>${e(order.tracking_number || '')}</b></a>` : `<b>${e(order.tracking_number || '')}</b>`}</p>
+    <h3 style="margin:0 0 4px;font-size:15px">Items in this shipment</h3>
+    <table width="100%" style="border-collapse:collapse">${items}</table>
+    <p style="margin:20px 0 4px;font-size:14px"><b>Delivering to:</b> ${e(order.customer.address)}, ${e(order.customer.city)}</p>
+    <p style="margin:0 0 4px;font-size:14px"><b>Amount due on delivery:</b> ${order.payment_status === 'paid' ? 'Rs 0 (paid)' : 'Rs ' + Number(order.total).toLocaleString('en-PK')}</p>
+    <hr style="border:0;border-top:1px solid #eee5dc;margin:24px 0">
+    <p style="font-size:12px;color:#7a6558;line-height:1.6;margin:0">Shipped by ${STORE.name}, ${e(STORE.address)}. Questions? Call or WhatsApp ${STORE.phone}.</p></div>`;
+  return sendHtml(order, `A shipment from order ${order.order_number} is on the way`, html);
 }
 export function normalizePhone(raw) {
   const digits = String(raw || '').replace(/\D/g,'');

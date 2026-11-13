@@ -1,5 +1,5 @@
 import {requireAdmin,response} from './_lib/server.js';
-import {sendOrderEmail} from './_lib/notifications.js';
+import {sendOrderEmail,sendShippedEmail} from './_lib/notifications.js';
 const ALLOWED = new Set(['confirmed','processing','out_for_delivery','delivered','cancelled']);
 export default async function handler(req,res) {
   if (!['GET','PATCH'].includes(req.method)) return response(res,405,{error:'Method not allowed'});
@@ -12,7 +12,7 @@ export default async function handler(req,res) {
       if (error) throw error;
       return response(res,200,{orders:(data || []).map(({checkout_token,idempotency_key,...row})=>row)});
     }
-    const {orderNumber,status,courier,trackingNumber,trackingUrl,action}=req.body || {};
+    const {orderNumber,status,courier,trackingNumber,trackingUrl,action,notify}=req.body || {};
     if (action==='collect_cod') {
       if(typeof orderNumber!=='string')return response(res,400,{error:'Invalid order number'});
       const {data,error}=await db.rpc('store_collect_cod',{p_number:orderNumber});
@@ -23,6 +23,7 @@ export default async function handler(req,res) {
     if (typeof orderNumber !== 'string' || !ALLOWED.has(status)) return response(res,400,{error:'Invalid order or status'});
     if (status === 'out_for_delivery' && (!courier?.trim() || !trackingNumber?.trim())) return response(res,400,{error:'Courier and tracking number are required before dispatch'});
     if (trackingUrl && !/^https:\/\//.test(trackingUrl)) return response(res,400,{error:'Tracking URL must start with https://'});
+    if ([courier,trackingNumber].some(v=>v!=null&&(typeof v!=='string'||v.trim().length>80))||(trackingUrl!=null&&(typeof trackingUrl!=='string'||trackingUrl.length>400))) return response(res,400,{error:'Courier, tracking number or link is too long'});
     const {data:before}=await db.from('orders').select('status').eq('order_number',orderNumber).maybeSingle();
     const {data:changed,error}=await db.rpc('store_transition_order',{
       p_number:orderNumber,p_status:status,p_courier:(courier||'').trim()||null,
@@ -30,11 +31,16 @@ export default async function handler(req,res) {
     });
     if (error) return response(res,409,{error:error.message});
     if (!changed) return response(res,404,{error:'Order not found or status changed concurrently'});
-    if (before && before.status !== status) {
+    // Shipping an order emails the customer; editing an already shipped order re-sends only when asked.
+    const newlyChanged = before && before.status !== status;
+    const shippingEdited = before && before.status === status && status === 'out_for_delivery' && notify === true;
+    if (newlyChanged || shippingEdited) {
       const {data:order}=await db.from('orders').select('*').eq('order_number',orderNumber).single();
       if(order) {
-        try {await sendOrderEmail(order,`Ludhiana Sweets: ${status.replace(/_/g,' ')} — ${orderNumber}`,`Your order status is now ${status.replace(/_/g,' ')}.${status==='out_for_delivery'?' Your delivery is on its way.':''}`);}
-        catch(err){console.error('Order update email failed:',err.message);}
+        try {
+          if (status === 'out_for_delivery') await sendShippedEmail(order);
+          else await sendOrderEmail(order,`Ludhiana Sweets: ${status.replace(/_/g,' ')} — ${orderNumber}`,`Your order status is now ${status.replace(/_/g,' ')}.`);
+        } catch(err){console.error('Order update email failed:',err.message);}
       }
     }
     return response(res,200,{ok:true});

@@ -73,13 +73,13 @@ const A = (() => {
     pending_whatsapp_confirmation: { l: "Awaiting WhatsApp", t: "warn" },
     confirmed: { l: "Confirmed", t: "info" },
     processing: { l: "Processing", t: "info" },
-    out_for_delivery: { l: "Out for delivery", t: "gold" },
+    out_for_delivery: { l: "Shipped", t: "gold" },
     delivered: { l: "Delivered", t: "ok" },
     cancelled: { l: "Cancelled", t: "bad" }
   };
   const NEXT = {
     pending: ["confirmed", "cancelled"], pending_whatsapp_confirmation: ["confirmed", "cancelled"],
-    confirmed: ["processing", "cancelled"], processing: ["out_for_delivery", "cancelled"],
+    confirmed: ["processing", "out_for_delivery", "cancelled"], processing: ["out_for_delivery", "cancelled"],
     out_for_delivery: ["delivered", "cancelled"], delivered: [], cancelled: []
   };
   const statusLabel = (s) => STATUS[s]?.l || String(s || "").replace(/_/g, " ");
